@@ -106,8 +106,9 @@ def compute_grid(rugged_config, grid_image, date,EPSG, UL, resolution,size):
     """
 
     try:
+        jarPath=os.path.join(os.path.dirname(os.path.realpath(__file__)),"../../seom_java_jar/seom-1.0-jar-with-dependencies.jar")
         # Create location compute_grid
-        out = subprocess.call(['java', '-Djava.library.path={}'.format(os.environ['GDAL_LIBRARY_PATH']), '-jar', os.environ['SEOM_JAVA'], 
+        out = subprocess.call(['java', '-Djava.library.path={}'.format(os.environ['GDAL_LIBRARY_PATH']), '-jar', jarPath,
                 rugged_config,"{}".format(date), grid_image, "{}".format(UL[0]), "{}".format(UL[1]), "{}".format(resolution[0]), "{}".format(resolution[1]), "{}".format(size[0]),"{}".format(size[1]),  "{}".format(EPSG)])
     except Exception:
         raise Exception("Error : could not create location grid from Rugged")
@@ -272,9 +273,11 @@ def create_topo_mask():
     compute_grid(args.ruggedConf, grid_image, reference_date,EPSG, UL_DEM, res_DEM,size_DEM)
    
     #create mask from grid
-    mask = os.path.join(args.tmp, "mask_{}.tif".format(product_name))
+    #mask = os.path.join(args.tmp, "mask_{}.tif".format(product_name))
+    mask = args.output + ".tif"
     create_mask_fromgrid(grid_image,mask,args.threshold)
-    create_shapefile(mask,args.output)
+    maskShp = args.output + ".shp"
+    create_shapefile(mask,maskShp)
 
     
     logging.info('Done. Execution time: %f seconds',time.time() - t0)

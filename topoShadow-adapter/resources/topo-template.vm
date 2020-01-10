@@ -1,3 +1,4 @@
+#set($SEOM_TOPO_PYTHON = $SEOM_TOPO_PYTHON.replace("\$HOME","$HOME"))
 $SEOM_TOPO_PYTHON/create_topo_mask.py
 #if($verbose)
 -v
