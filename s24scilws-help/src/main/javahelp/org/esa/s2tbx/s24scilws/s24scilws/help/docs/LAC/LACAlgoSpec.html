@@ -33,12 +33,7 @@
 <h3>LAC</h3>
 
 <p>
-    The purpose of the LAC algorithm is
-</p>
-
-
-<p>
-    Blablabla.
+    The purpose of the LAC algorithm is to perform atmospheric correction of a Sentinel-2 granule.
 </p>
 
 
@@ -57,37 +52,19 @@
     </thead>
     <tbody>
     <tr>
-        <td><strong>sunGlintVector</strong></td>
-        <td>The sample area/s of the image displaying a range of sun glint. This parameters must be
-        the name of a vector data contained in the source product. If the source product does not contain
-        this kind of data, the user should create it previously by creating a new vector data container and adding
-        some areas by using the available tools (Rectangle, Polygon or Ellipse drawing tools)</td>
+        <td><strong>completeAtmosphericCorrection</strong></td>
+        <td>If true, the complete atmospheric correction is applied</td>
     </tr>
     <tr>
-        <td><strong>sourceBandNames</strong></td>
-        <td>The bands to be corrected. The user can select one or more bands.
+        <td><strong>bands</strong></td>
+        <td>The bands to be corrected separated by "_".
         </td>
     </tr>
     <tr>
-        <td><strong>referenceBands</strong></td>
-        <td>The NIR band to be used as reference. It should have the same raster size than the source bands selected.
-            If the source bands have different raster sizes, it should be selected at least one reference band per each raster size.
-            If they are selected two or more reference bands with the same raster size, only the first of them will be used for the correction.
+        <td><strong>sourceFolder</strong></td>
+        <td>The path to a folder of a Sentinel-2 tile.
+            (For example: /Data/S2/S2B_MSIL1C_20180328T003659_N0206_R059_T55LCD_20180328T021112.SAFE/GRANULE/L1C_T55LCD_A005519_20180328T003700)
         </td>
-    </tr>
-    <tr>
-        <td><strong>includeReferences</strong></td>
-        <td>If this option is selected, besides the corrected bands, the bands used as reference will be included in the output product.</td>
-    </tr>
-    <tr>
-        <td><strong>minNIRString</strong></td>
-        <td>If the user sets an only value, this value will be used for all reference bands selected. It is possible to use individual values
-        for each reference band by separating them by ';'. If the value is negative, then the minimum in the NIR band over the sample area will
-        be used.</td>
-    </tr>
-    <tr>
-        <td><strong>maskNegativeValues</strong></td>
-        <td>If this option is selected, the negative reflectance values generated during the correction will be set to NoDataValue.</td>
     </tr>
     </tbody>
 </table>
@@ -96,6 +73,7 @@
 <p>
     The parameters described above can be set through the graphical user interface designed in the SNAP Desktop component:
 </p>
+<img src="../images/lacGUI.jpg" border=0/>
 
 </body>
 </html>
