@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='ISO-8859-1'  ?>
+<!DOCTYPE toc
+        PUBLIC
+        "-//Sun Microsystems Inc.//DTD
+     JavaHelp TOC Version 2.0//EN"
+        "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+
+<toc version="2.0" categoryclosedimage="folder" categoryopenimage="folder" topicimage="doc">
+
+    <tocitem text="Sentinel Toolbox Application">
+        <tocitem text="Optical">
+            <tocitem text="Thematic Water Processing">
+            <tocitem text="S2-4Sci Land and Water Study">
+                <tocitem text="S2-4Sci Land and Water Study Algorithms">
+
+                <tocitem text="S2-4Sci Land and Water Study Algorithms Complete List" target="s24scilwsOperatorsIndexList"/>
+
+
+                    <tocitem text="LAC Operator" target="LACOperator">
+                        <tocitem text="LAC Algorithm Specification" target="LACAlgorithm"/>
+                    </tocitem>
+                    <tocitem text="topo Operator" target="topoOperator">
+                        <tocitem text="topo Algorithm Specification" target="topoAlgorithm"/>
+                    </tocitem>
+                    <tocitem text="WIPE Operator" target="WIPEOperator">
+                        <tocitem text="WIPE Algorithm Specification" target="WIPEAlgorithm"/>
+                    </tocitem>
+
+                </tocitem>
+            </tocitem>
+            </tocitem>
+        </tocitem>
+    </tocitem>
+
+</toc>

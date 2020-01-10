@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+        PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
+        "http://java.sun.com/products/javahelp/map_2_0.dtd">
+
+<map version="2.0">
+
+    <mapID target="LACOperator" url="LAC/LACTool.html"/>
+    <mapID target="LACAlgorithm" url="LAC/LACAlgoSpec.html"/>
+
+    <mapID target="WIPEOperator" url="WIPE/WIPETool.html"/>
+    <mapID target="WIPEAlgorithm" url="WIPE/WIPEAlgoSpec.html"/>
+
+    <mapID target="topoOperator" url="topo/topoTool.html"/>
+    <mapID target="topoAlgorithm" url="topo/topoAlgoSpec.html"/>
+
+    <mapID target="s24scilwsOperatorsIndexList" url="s24scilwsOperatorsIndexList.html"/>
+
+</map>

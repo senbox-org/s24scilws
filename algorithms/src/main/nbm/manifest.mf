@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Specification-Version: ${project.nbmSpecVersion}
+OpenIDE-Module-Display-Category: Algorithms S2-4Sci Land and Water Study Toolbox
+AutoUpdate-Show-In-Client: true
+AutoUpdate-Essential-Module: false
+OpenIDE-Module-Layer: org/esa/s2tbx/s24scilws/algorithms/layer.xml

@@ -1,0 +1,12 @@
+#set($LAC_FOLDER = $LAC_FOLDER.replace("\$HOME","$HOME"))
+$LAC_FOLDER/LAC_S2.py
+--dirout
+$sourceFolder
+--atmcor
+#if($completeAtmosphericCorrection)
+y
+#else
+n
+#end
+--bands
+$bands

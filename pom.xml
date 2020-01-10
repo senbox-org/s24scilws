@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.esa.s2tbx.s24scilws</groupId>
+    <artifactId>s24scilws</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+        <snap.version>7.0.0</snap.version>
+        <s2tbx.version>7.0.0</s2tbx.version>
+        <netbeans.version>RELEASE82</netbeans.version>
+        <javahelp.version>2.0.05</javahelp.version>
+    </properties>
+
+
+    <modules>
+        <module>algorithms</module>
+        <module>LAC_adapter</module>
+        <module>s24scilws-lac-reader</module>
+        <module>s24scilws-kit</module>
+        <module>s24scilws-help</module>
+        <module>topoShadow-adapter</module>
+        <module>topoShadow</module>
+        <module>LAC</module>
+    </modules>
+
+    <dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-sta</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-sta-ui</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-geotiff</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-core</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>ceres-core</artifactId>
+            <version>${snap.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s2tbx</groupId>
+            <artifactId>s2tbx-commons</artifactId>
+            <version>${s2tbx.version}</version>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>org.esa.snap</groupId>
+            <artifactId>snap-rcp</artifactId>
+        </dependency> -->
+    </dependencies>
+    </dependencyManagement>
+
+
+    <repositories>
+        <repository>
+            <id>snap-repo-public</id>
+            <name>Public Maven Repository for SNAP</name>
+            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>snap-repo-public</id>
+            <name>Public Maven Repository for SNAP</name>
+            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <debug>true</debug>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>file-manifest</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/nbm</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/nbm</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>manifest.mf</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.1</version>
+                <!--
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                -->
+                <executions>
+                    <!--
+                        Prepares the property pointing to the JaCoCo runtime agent which
+                        is passed as VM argument when Maven the Surefire plugin is executed.
+                    -->
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+                            <!--
+                                Sets the name of the property containing the settings
+                                for JaCoCo runtime agent.
+                            -->
+                            <propertyName>surefireArgLine</propertyName>
+                        </configuration>
+                    </execution>
+                    <!--
+                        Ensures that the code coverage report for unit tests is created after
+                        unit tests have been run.
+                    -->
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.1.0</version>
+                <configuration>
+                    <sourceDirectories>
+                        <sourceDirectory>${project.basedir}/s2tbx-s2msi-reader/target/generated-sources</sourceDirectory>
+                    </sourceDirectories>
+                    <scanForSources>true</scanForSources>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>nbm-maven-plugin</artifactId>
+                    <version>3.14</version>
+                    <extensions>true</extensions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>javax.help</groupId>
+                            <artifactId>javahelp</artifactId>
+                            <version>${javahelp.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <moduleType>normal</moduleType>
+                        <licenseName>GPL 3</licenseName>
+                        <licenseFile>${project.basedir}/../LICENSE.html</licenseFile>
+                        <cluster>${brandingToken}</cluster>
+                        <brandingToken>${brandingToken}</brandingToken>
+                        <useOSGiDependencies>false</useOSGiDependencies>
+                        <requiresRestart>true</requiresRestart>
+                        <keystore>${project.basedir}/../keystore/sen2coral.ks</keystore>
+                        <keystorealias>snap</keystorealias>
+                        <keystorepassword>snap-123</keystorepassword>
+                        <sourceManifestFile>target/nbm/manifest.mf</sourceManifestFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <!-- to have the jar plugin pickup the nbm generated manifest -->
+                        <useDefaultManifestFile>true</useDefaultManifestFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>1.10</version>
+                    <executions>
+                        <execution>
+                            <id>regex-property</id>
+                            <goals>
+                                <goal>regex-property</goal>
+                            </goals>
+                            <configuration>
+                                <name>project.nbmSpecVersion</name>
+                                <value>${project.version}</value>
+                                <regex>-SNAPSHOT</regex>
+                                <replacement>.0</replacement>
+                                <failIfNoMatch>false</failIfNoMatch>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19</version>
+                    <configuration>
+                        <enableAssertions>true</enableAssertions>
+                        <!--<skip>true</skip>-->
+                        <printSummary>true</printSummary>
+                        <useFile>false</useFile>
+                        <includes>
+                            <include>**/*Test.java</include>
+                            <include>**/*Test*.java</include>
+                            <include>**/*TestCase.java</include>
+                        </includes>
+                        <systemPropertyVariables>
+                            <org.esa.snap.testdata.out>target/test-data</org.esa.snap.testdata.out>
+                            <snap.reader.tests.execute>${snap.reader.tests.execute}</snap.reader.tests.execute>
+                            <snap.reader.tests.failOnMissingData>${snap.reader.tests.failOnMissingData}</snap.reader.tests.failOnMissingData>
+                            <snap.reader.tests.data.dir>${snap.reader.tests.data.dir}</snap.reader.tests.data.dir>
+                            <snap.reader.tests.class.name>${snap.reader.tests.class.name}</snap.reader.tests.class.name>
+                        </systemPropertyVariables>
+                        <argLine>${surefireArgLine} -Xmx1024M -Dfile.encoding=UTF-8 -da:org.geotools.referencing.operation.projection.MapProjection</argLine>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+</project>

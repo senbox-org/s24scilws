@@ -1,0 +1,35 @@
+<filesystem>
+
+    <folder name="Actions">
+        <folder name="Operators">
+            <file name="org-esa-s2tbx-s24scilws-algorithms-WipeOpAction.instance">
+                <attr name="instanceCreate" methodvalue="org.openide.awt.Actions.alwaysEnabled"/>
+                <attr name="delegate" methodvalue="org.esa.snap.core.gpf.ui.DefaultOperatorAction.create"/>
+                <attr name="displayName" stringvalue="Wipe"/>
+                <attr name="operatorName" stringvalue="WipeOp"/>
+                <attr name="dialogTitle" stringvalue="Wipe"/>
+                <attr name="targetProductNameSuffix" stringvalue="_wm"/>
+                <attr name="ShortDescription"
+                      stringvalue="Compute water mask"/>
+                <attr name="helpId"
+                      stringvalue="WIPEOperator"/>
+            </file>
+
+        </folder>
+    </folder>
+
+    <folder name="Menu">
+        <folder name="Optical">
+            <folder name="Thematic Water Processing">
+            <folder name="S2-4Sci Land and Water Study">
+                    <file name="org-esa-s2tbx-s24scilws-algorithms-WipeOpAction.shadow">
+                        <attr name="originalFile"
+                              stringvalue="Actions/Operators/org-esa-s2tbx-s24scilws-algorithms-WipeOpAction.instance"/>
+                        <attr name="position" intvalue="1"/>
+                    </file>
+            </folder>
+            </folder>
+        </folder>
+    </folder>
+
+</filesystem>

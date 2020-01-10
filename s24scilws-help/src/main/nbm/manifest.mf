@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Specification-Version: ${project.nbmSpecVersion}
+OpenIDE-Module-Display-Category: S2-4Sci Land and Water Study Toolbox Help
+AutoUpdate-Show-In-Client: true
+AutoUpdate-Essential-Module: false
+OpenIDE-Module-Layer: org/esa/s2tbx/s24scilws/help/layer.xml

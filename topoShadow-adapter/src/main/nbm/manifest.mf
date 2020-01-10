@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Specification-Version: 1.0.0
+OpenIDE-Module-Implementation-Version: 1.0.0
+OpenIDE-Module-Name: Topo Shadow Processor
+OpenIDE-Module-Display-Category: Sentinel-2 Toolbox
+OpenIDE-Module-Java-Dependencies: Java > 1.8
+OpenIDE-Module-Type: STA
+OpenIDE-Module-Short-Description: TopoShadow
+OpenIDE-Module: org.esa.s2tbx.s24scilws.topo
+OpenIDE-Module-Alias: topoShadow
+OpenIDE-Module-Module-Dependencies: org.esa.snap.snap.sta, org.esa.snap.snap.sta.ui
