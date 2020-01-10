@@ -1,4 +1,4 @@
-$TOPOSEOM_TOPO_PYTHON/create_topo_mask.py
+$SEOM_TOPO_PYTHON/create_topo_mask.py
 #if($verbose)
 -v
 #end
