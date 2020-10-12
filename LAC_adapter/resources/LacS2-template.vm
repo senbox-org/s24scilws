@@ -1,7 +1,9 @@
 #set($LAC_FOLDER = $LAC_FOLDER.replace("\$HOME","$HOME"))
 $LAC_FOLDER/LAC_S2.py
---dirout
+--dirin
 $sourceFolder
+--dirout
+$targetFolder
 --atmcor
 #if($completeAtmosphericCorrection)
 y
