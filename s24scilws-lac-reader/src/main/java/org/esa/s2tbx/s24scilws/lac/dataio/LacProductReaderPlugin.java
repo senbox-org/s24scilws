@@ -1,7 +1,7 @@
 package org.esa.s2tbx.s24scilws.lac.dataio;
 
 import org.esa.s2tbx.dataio.readers.BaseProductReaderPlugIn;
-import org.esa.s2tbx.dataio.readers.PathUtils;
+import org.esa.snap.engine_utilities.util.PathUtils;
 import org.esa.snap.core.dataio.DecodeQualification;
 import org.esa.snap.core.dataio.ProductReader;
 import org.esa.snap.core.dataio.ProductReaderPlugIn;
