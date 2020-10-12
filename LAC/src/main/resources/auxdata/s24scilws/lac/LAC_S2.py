@@ -1,42 +1,55 @@
 #python LAC_S2.py -h to see description 
 
-import os, sys, argparse,subprocess,glob
+import os, sys, argparse, subprocess
 from datetime import datetime,timedelta
 
-
 parser = argparse.ArgumentParser(description='Download and process S2 data')
-parser.add_argument('-dirout','--dirout', required=True, help='(e.g: /home)')
+parser.add_argument('-dirin','--dirin', required=True, help='(e.g: /home)')
 parser.add_argument('-atmcor','--atmcor', required=True, help='(e.g: y means full correction while n means only Rayleigh)')
 parser.add_argument('-bands','--bands', required=False, help='(e.g: Set the bands you want as output : 02_03_04_11 as default)')
+parser.add_argument('-dirout','--dirout', required=True, help='(e.g: /home)')
+
+print("***HERE***")
+print(sys.args)
 
 args = parser.parse_args()
 
-DirOut=str(args.dirout)
+DirIn =str(args.dirin)
 Bands = str(args.bands)
-
 Atmcor=str(args.atmcor)
+DirOut=str(args.dirout)
+
+
 # Level=str(args.level)
 
 Level="L1C"
 PixSat="0.15"
-#DirScript="/mount/internal/work-st/projects/esrin-079/1402-seom/S2/scripts/S2_L8/S2"
-DirScript=os.path.dirname(os.path.realpath(__file__))
+#DirScriptDirScript="/mount/internal/work-st/projects/esrin-079/1402-seom/S2/scripts/S2_L8/S2"
 		
 #print "python "+DirScript+"/Sentinel_download2.py --lat "+Lat+" --lon "+Lon+" -a "+DirScript+"/apihub.txt -t "+Code+" -l "+Level+" -d "+TDateTemp+" -f "+TDateTemp+" -w "+DirOut+"/"+Code+"/"+TDateTemp+" --dhus"
 #test=subprocess.check_output("python "+DirScript+"/Sentinel_download2.py --lat "+Lat+" --lon "+Lon+" -a "+DirScript+"/apihub.txt -t "+Code+" -l "+Level+" -d "+TDateTemp+" -f "+TDateTemp+" -w "+DirOut+"/"+Code+"/"+TDateTemp+" --dhus", shell=True)
-		
-if Atmcor=="n":
-	LS=glob.glob(DirOut+"/MTD_TL.xml")
-	if len(LS)>0: #TEST pour voir s'il y a un fichier telecharge a la date donnee
-		#test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-		print ("python "+DirScript+"/SEOM_Rayleigh_LAC.py "+DirOut+" \""+Bands+"\" "+PixSat)
-		test=subprocess.Popen("python "+DirScript+"/SEOM_Rayleigh_LAC.py "+DirOut+" \""+Bands+"\" "+PixSat,stderr=subprocess.PIPE,shell=True)
-		output,error=test.communicate()
-		print output
-else:
-	LS=glob.glob(DirOut+"/MTD_TL.xml")
-	if len(LS)>0: #TEST pour voir s'il y a un fichier telecharge a la date donnee
-		#test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-		test=subprocess.Popen("python "+DirScript+"/SEOM_RayleighAerosols_LAC.py "+DirOut+" \""+Bands+"\" 02_03_04_08",stderr=subprocess.PIPE,shell=True)
-		output,error=test.communicate()
-		print output
+#print ("python "+" SEOM_Rayleigh_LAC.py "+DirOut+" \""+Bands+"\" "+PixSat)
+if os.path.exists(os.path.join(DirIn, "MTD_TL.xml")): #TEST pour voir s'il y a un fichier telecharge a la date donnee
+    if Atmcor=="n":	
+        #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
+        test=subprocess.Popen(["python", "SEOM_Rayleigh_LAC.py", DirIn, Bands, PixSat, DirOut], stderr=subprocess.PIPE)
+        output,error=test.communicate()
+        if error is not None:
+            error = error.decode('utf-8')
+            if 'Warning' not in error:
+                print("The process failed:\n", error)
+                sys.exit(1)
+        if output is not None:
+            print (output)
+    elif Atmcor=="y":
+        #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
+        test=subprocess.Popen(["python", "SEOM_RayleighAerosols_LAC.py", DirIn, Bands, "02_03_04_08_11", DirOut], stderr=subprocess.PIPE) #+"\" 02_03_04_08"
+        #print ("python "+" SEOM_RayleighAerosols_LAC.py "+DirIn+" \""+Bands+"\" 02_03_04_08_11 "+DirOut)
+        output,error=test.communicate()
+        if error is not None:
+            error = error.decode('utf-8')
+            if 'Warning' not in error:
+                print("The process failed:\n", error)
+                sys.exit(1)
+        if output is not None:
+            print (output)

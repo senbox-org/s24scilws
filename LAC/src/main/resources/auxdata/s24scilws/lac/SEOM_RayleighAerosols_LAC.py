@@ -5,18 +5,22 @@ import scipy.ndimage
 from PIL import Image
 import datetime
 import numpy.ma as ma
-from math import exp,log10
+
 import subprocess
 import os.path
 import re
 import time
-from Pysolar.solar import *
+from pysolar.solar import *
 import copy
 #from scipy.interpolate import Rbf
 import pygrib
+
 import glob
 import scipy.interpolate as interpolate
 import shutil
+import pytz
+from math import *
+from math import fabs
 
 #Module pour interpoler un tableau en fonction de la distance aux points
 def InterpolArray(array):
@@ -42,7 +46,7 @@ def InterpolArray(array):
 
 #Module pour les concentrations en O3			
 def getO3(Dir):
-	ListfileECMWFT=glob.glob('%s/AUX_DATA/AUX_ECMWFT' %Dir)
+	ListfileECMWFT=glob.glob(os.path.join(Dir, 'AUX_DATA', 'AUX_ECMWFT'))
 
 
 	if len(ListfileECMWFT)>0:
@@ -56,18 +60,18 @@ def getO3(Dir):
 		tvar = grbs.select(name="Total column ozone")[0]
 		data, lats, lons = tvar.data(lat1=-100, lat2=100, lon1=-400, lon2=400)
 		mean=data.reshape(1,len(data)*len(data[0]),1).mean()
-		print datum,mean
+		print (datum,mean)
 
 
-		if os.path.isfile("%s/MeanO3.txt" %Dir):
-			os.remove("%s/MeanO3.txt" %Dir)
+		if os.path.isfile(os.path.join(newFolder, 'MeanO3.txt')):
+			os.remove(os.path.join(newFolder, "MeanO3.txt"))
 
-		f = open('%s/MeanO3.txt' %Dir,'a+')
+		f = open(os.path.join(newFolder, 'MeanO3.txt'),'a+')
 		f.write("%s;%s;" %(datum,mean))
 		f.close	
 
 	
-		fileB1=glob.glob('%s/IMG_DATA/*B01.jp2' %Dir)
+		fileB1=glob.glob(os.path.join(Dir, 'IMG_DATA', '*B01.jp2'))
 
 		inDs = gdal.Open("%s" %fileB1[0])
 		rows = inDs.RasterYSize
@@ -78,7 +82,7 @@ def getO3(Dir):
 		GeoT=[inGs[0],rows*inGs[1]/len(data),inGs[2],inGs[3],inGs[4],cols*inGs[5]/len(data[0])]
 
 
-		outDs = driver.Create("%s/O3-%s.TIF" %(Dir,datum), len(data[1]), len(data), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=DEFLATE'])
+		outDs = driver.Create(os.path.join(newfolder, f'03-{datum}.TIF'), len(data[1]), len(data), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=DEFLATE'])
 		outBand = outDs.GetRasterBand(1)
 		outBand.WriteArray(data)
 		outBand.FlushCache()
@@ -95,7 +99,7 @@ def getO3(Dir):
 
 #Module pour les pressions			
 def getPressure(Dir):
-	ListfileECMWFT=glob.glob('%s/AUX_DATA/ECMWFT' %Dir)
+	ListfileECMWFT=glob.glob(os.path.join(Dir, 'AUX_DATA', 'ECMWFT'))
 	ArrayPres=[]
 
 	if len(ListfileECMWFT)>0:
@@ -108,11 +112,11 @@ def getPressure(Dir):
 		tvar = grbs.select(name="Mean sea level pressure")[0]
 		ArrayPres, lats, lons = tvar.data(lat1=-100, lat2=100, lon1=-400, lon2=400)
 		mean=ArrayPres.reshape(1,len(ArrayPres)*len(ArrayPres[0]),1).mean()
-		print datum,mean
+		print (datum,mean)
 
 
 	
-		fileB1=glob.glob('%s/IMG_DATA/*B01.jp2' %Dir)
+		fileB1=glob.glob(os.path.join(Dir, 'IMG_DATA', '*B01.jp2'))
 
 		inDs = gdal.Open("%s" %fileB1[0])
 		rows = inDs.RasterYSize
@@ -123,7 +127,7 @@ def getPressure(Dir):
 		GeoT=[inGs[0],rows*inGs[1]/len(ArrayPres),inGs[2],inGs[3],inGs[4],cols*inGs[5]/len(ArrayPres[0])]
 
 
-		outDs = driver.Create("%s/Pressure-%s.TIF" %(Dir,datum), len(ArrayPres[1]), len(ArrayPres), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=DEFLATE'])
+		outDs = driver.Create(os.path.join(Dir, f"Pressure-{datum}.TIF"), len(ArrayPres[1]), len(ArrayPres), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=DEFLATE'])
 		outBand = outDs.GetRasterBand(1)
 		outBand.WriteArray(ArrayPres)
 		outBand.FlushCache()
@@ -329,12 +333,8 @@ def RechercheRayleighDat(ThetasS,ThetavS,AziS,AziV):
 
 
 
-	a_plus = math.acos(1 * (math.cos(Sun_zen * math.pi / 180) * math.cos(float(Sat_zen) * math.pi / 180) - math.sin(
-	Sun_zen * math.pi / 180) * math.sin(float(Sat_zen) * math.pi / 180) * math.cos(
-	math.fabs((Sun_azi - float(Sat_azi))) * math.pi / 180))) * 180 / math.pi
-	a_minus = math.acos(-1 * (math.cos(Sun_zen * math.pi / 180) * math.cos(float(Sat_zen) * math.pi / 180) - math.sin(
-	Sun_zen * math.pi / 180) * math.sin(float(Sat_zen) * math.pi / 180) * math.cos(
-	math.fabs((Sun_azi - float(Sat_azi))) * math.pi / 180))) * 180 / math.pi
+	a_plus = math.acos(1 * (math.cos(Sun_zen * math.pi / 180) * math.cos(float(Sat_zen) * math.pi / 180) - math.sin(Sun_zen * math.pi / 180) * math.sin(float(Sat_zen) * math.pi / 180) * math.cos(fabs((Sun_azi - float(Sat_azi))) * math.pi / 180))) * 180 / math.pi
+	a_minus = math.acos(-1 * (math.cos(Sun_zen * math.pi / 180) * math.cos(float(Sat_zen) * math.pi / 180) - math.sin(Sun_zen * math.pi / 180) * math.sin(float(Sat_zen) * math.pi / 180) * math.cos(fabs((Sun_azi - float(Sat_azi))) * math.pi / 180))) * 180 / math.pi
 	if (1 * math.sin(Sun_zen * math.pi / 180) > 1):
 		a_trans_sun = math.atan(1 * math.sin(Sun_zen * math.pi / 180)) * 180 / math.pi
 	else:
@@ -371,8 +371,8 @@ def RechercheRayleigh(ThetasS,ThetavS,DeltaphiS):
 	DeltaphiS=float(DeltaphiS)
 
 	###### Recherche du Rayleigh ######
-	filename='/mount/internal/work-he/apps/sirhyus/data/service3_qualite/inputs/satellite/rhor_S2.txt'
-	fic=open("%s" %filename,"r")
+	filename='rhor_S2.txt'#'/mount/internal/work-he/apps/sirhyus/data/service3_qualite/inputs/satellite/rhor_S2.txt'
+	fic=open("%s" % filename,"r")
 
 	AllLines=fic.readlines()
 	fic.seek(0)
@@ -478,12 +478,13 @@ start_time = time.time()
 Dir=sys.argv[1]
 TextInterest=sys.argv[2]
 TextWrite=sys.argv[3]
+OutPath = sys.argv[4]
 
-LSB01=glob.glob(Dir+"/IMG_DATA/*B01.jp2")
+LSB01=glob.glob(os.path.join(Dir, "IMG_DATA", "*B01.jp2"))
 DirW=os.path.dirname(LSB01[0])
 ID=(os.path.basename(LSB01[0])).replace("_B01.jp2","")
 
-newfolder = Dir+"/output_DATA"
+newfolder = OutPath # Dir+"/output_DATA"
 
 if os.path.isdir(newfolder):
     shutil.rmtree(newfolder)
@@ -499,7 +500,7 @@ Pressure=getPressure(Dir)
 NbTile=1
 if len(sys.argv)==6:
 	NbTile=int(sys.argv[5]) # Pas 4 (doit etre multiple de 5490). Si 5, il y aura 5x5 tuiles
-print "NbTile %s" %NbTile
+print ("NbTile %s" %NbTile)
 IDexp=ID.split("_")
 datum=IDexp[1]
 Tuile=IDexp[0]
@@ -540,15 +541,15 @@ Lamb.append(0.8648)
 boolCloud=0
 
 #Lecture des bandes 1 et 10 pour faire un pseudo masque nuage
-if os.path.isfile("%s/%s_B01.jp2" %(DirW,ID)) & os.path.isfile("%s/%s_B10.jp2" %(DirW,ID)):
+if os.path.isfile(os.path.join(DirW, f"{ID}_B01.jp2")) and os.path.isfile(os.path.join(DirW, f"{ID}_B10.jp2")):
 	boolCloud=1
 	CloudGlob=[]
 	CloudGeo=[]
-	if os.path.isfile("%s/%s_B01.TIF" %(DirW,ID)):
-		ds = gdal.Open("%s/%s_B01.TIF" %(DirW,ID), gdal.GA_ReadOnly)
+	if os.path.isfile(os.path.join(DirW, f"{ID}_B01.TIF")):
+		ds = gdal.Open(os.path.join(DirW, f"{ID}_B01.TIF"), gdal.GA_ReadOnly)
 
 	else:
-		ds = gdal.Open("%s/%s_B01.jp2" %(DirW,ID), gdal.GA_ReadOnly)	
+		ds = gdal.Open(os.path.join(DirW, f"{ID}_B01.jp2"), gdal.GA_ReadOnly)	
 
 	band = ds.GetRasterBand(1)
 	print("Temps Avant %s seconds ---" % (time.time() - start_time))
@@ -556,10 +557,10 @@ if os.path.isfile("%s/%s_B01.jp2" %(DirW,ID)) & os.path.isfile("%s/%s_B10.jp2" %
 	CloudGeo.append(ds.GetGeoTransform())
 	ds=None
 
-	if os.path.isfile("%s/%s_B10.TIF" %(DirW,ID)):
-		ds = gdal.Open("%s/%s_B10.TIF" %(DirW,ID), gdal.GA_ReadOnly)	
+	if os.path.isfile(os.path.join(DirW, f"{ID}_B10.TIF")):
+		ds = gdal.Open(os.path.join(DirW, f"{ID}_B10.TIF"), gdal.GA_ReadOnly)	
 	else:
-		ds = gdal.Open("%s/%s_B10.jp2" %(DirW,ID), gdal.GA_ReadOnly)	
+		ds = gdal.Open(os.path.join(DirW, f"{ID}_B10.jp2"), gdal.GA_ReadOnly)	
 	band = ds.GetRasterBand(1)
 	print("Temps Avant %s seconds ---" % (time.time() - start_time))
 	CloudGlob.append(band.ReadAsArray().astype(np.int))
@@ -572,7 +573,7 @@ ds=None
 
 
 
-RepXml=getAngles2("%s/MTD_TL.xml" %(Dir))
+RepXml=getAngles2(os.path.join(Dir, "MTD_TL.xml"))
 TimeStamp=RepXml[0]
 ArrayZenithV=RepXml[1]
 ArrayAzimuthV=RepXml[2]
@@ -598,6 +599,7 @@ Coord=subprocess.check_output('echo "'+str(CloudGeo[0][0])+' '+str(CloudGeo[0][3
 Coord=str(Coord).split(" ")
 X=Coord[0]
 Y=Coord[1]
+X = X[2:]
 ArrayLon[0][0]=float(X)
 ArrayLat[0][0]=float(Y)
 
@@ -605,6 +607,7 @@ Coord=subprocess.check_output('echo "'+str(CloudGeo[0][0])+' '+str(CloudGeo[0][3
 Coord=str(Coord).split(" ")
 X=Coord[0]
 Y=Coord[1]
+X = X[2:]
 ArrayLon[1][0]=float(X)
 ArrayLat[1][0]=float(Y)
 
@@ -612,6 +615,7 @@ Coord=subprocess.check_output('echo "'+str(CloudGeo[0][0]+CloudGeo[0][1]*len(Clo
 Coord=str(Coord).split(" ")
 X=Coord[0]
 Y=Coord[1]
+X = X[2:]
 ArrayLon[1][1]=float(X)
 ArrayLat[1][1]=float(Y)
 
@@ -619,11 +623,12 @@ Coord=subprocess.check_output('echo "'+str(CloudGeo[0][0]+CloudGeo[0][1]*len(Clo
 Coord=str(Coord).split(" ")
 X=Coord[0]
 Y=Coord[1]
+X = X[2:]
 ArrayLon[0][1]=float(X)
 ArrayLat[0][1]=float(Y)
 
-print ArrayLon
-print ArrayLat
+print (ArrayLon)
+print (ArrayLat)
 ArrayLon2=scipy.ndimage.zoom(ArrayLon, 10, order=1)
 ArrayLat2=scipy.ndimage.zoom(ArrayLat, 10, order=1)
 
@@ -645,8 +650,9 @@ costeta=np.zeros((20,20))
 costetav=np.zeros((20,20))
 for i in range(0,20):
 	for j in range(0,20):
-		ElevationS=GetAltitude(ArrayLat2[i][j],ArrayLon2[i][j], TimeStamp)
-		AzimuthS=GetAzimuth(ArrayLat2[i][j],ArrayLon2[i][j], TimeStamp)
+		ElevationS=get_altitude(ArrayLat2[i][j],ArrayLon2[i][j], TimeStamp.replace(tzinfo=pytz.UTC))
+		AzimuthS=get_azimuth(ArrayLat2[i][j],ArrayLon2[i][j], TimeStamp.replace(tzinfo=pytz.UTC))
+		
 		ZenithS=90-ElevationS
 		ArrayZenithS[i][j]=ZenithS
 
@@ -669,7 +675,7 @@ for i in range(0,20):
 
 ArrayRayleigh2=np.array(ArrayRayleigh)
 
-print ArrayRayleigh2[0][0]
+print (ArrayRayleigh2[0][0])
 Resolution=TextResolution.split("_")
 Interest=TextInterest.split("_")
 Write=TextWrite.split("_")
@@ -718,10 +724,10 @@ while iBande < len(Interest):
 
 
 	#S'il y a des fichiers TIF intermediaires, la lecture est plus rapide
-        if os.path.isfile("%s/%s_B%s.TIF" %(DirW,ID,NumBande)):
-                ds = gdal.Open("%s/%s_B%s.TIF" %(DirW,ID,NumBande), gdal.GA_ReadOnly)
+        if os.path.isfile(os.path.join(DirW, f"{ID}_B{NumBande}.TIF")):
+                ds = gdal.Open(os.path.join(DirW, f"{ID}_B{NumBande}.TIF"), gdal.GA_ReadOnly)
         else:
-                ds = gdal.Open("%s/%s_B%s.jp2" %(DirW,ID,NumBande), gdal.GA_ReadOnly)
+                ds = gdal.Open(os.path.join(DirW, f"{ID}_B{NumBande}.jp2"), gdal.GA_ReadOnly)
         SizeY = ds.RasterYSize
         SizeX = ds.RasterXSize
 
@@ -733,10 +739,10 @@ while iBande < len(Interest):
 
         ExtRay=ArrayRayleigh2[...,int(NumBande)].astype(np.float)
         Rayleigh.append(scipy.ndimage.zoom(ExtRay, SizeX/20.0, order=3))
-        print NumBande,int(NumBande),ExtRay[0][0]
+        print (NumBande,int(NumBande),ExtRay[0][0])
 
         del ds
-        print NumBande
+        print (NumBande)
 
         iBande+=1
 
@@ -763,7 +769,7 @@ print("Temps costetav60 Avant %s seconds ---" % (time.time() - start_time))
 
 
 Moy_O3=max(0,getO3(Dir))
-print "Ozone moyen : %s DU (avant 332.8 DU) " %Moy_O3
+print ("Ozone moyen : %s DU (avant 332.8 DU) " %Moy_O3)
 Moy_O3=Moy_O3*0.001
 
 
@@ -776,7 +782,7 @@ version="_v3"
 ####################################
 
 
-fce = open("%s/CloudAndEps%s.txt" %(newfolder, version), 'w+') #cvi
+fce = open(os.path.join(newfolder, f"CloudAndEps{version}.txt"), 'w+') #cvi
 boolCloud=1
 if boolCloud==1:
 
@@ -809,7 +815,7 @@ if boolCloud==1:
 		bb=bb+10
 	'''
 	CouvNuage=np.mean(np.array(CloudMask60))
-	print CouvNuage
+	print (CouvNuage)
 	fce.write("%s \n" %(CouvNuage)) #cvi : print du % nuage sur l image traitee
 
 
@@ -817,8 +823,8 @@ if boolCloud==1:
 EpsArray=np.zeros((NbTile,NbTile))
 MinB11Array=np.zeros((NbTile,NbTile))
 
-if os.path.isfile('%s/Correc.txt' %newfolder):
-		os.remove('%s/Correc.txt' %newfolder)
+if os.path.isfile(os.path.join(newfolder, 'Correc.txt')):
+		os.remove(os.path.join(newfolder, 'Correc.txt'))
 
 for Ti in range(0,NbTile):
 	for Tj in range(0,NbTile):
@@ -845,7 +851,7 @@ for Ti in range(0,NbTile):
 			iBande+=1
 
 		if iBande>1000:   #Passage a la cible suivante
-			print "Cible %s/%s hors image" %(Lon,Lat)
+			print ("Cible %s/%s hors image" %(Lon,Lat))
 			continue
 
 		TestBand=data[0].reshape(data[0].shape[0]*data[0].shape[1],1)
@@ -897,7 +903,7 @@ for Ti in range(0,NbTile):
 			while iBande < len(Interest):
 				NumBande=int(Interest[iBande])		
 				tau_O3=getTau(Lamb[NumBande])
-				print "Ray %s : %s" %(NumBande,ExtRayleigh[iBande][0][0])
+				print ("Ray %s : %s" %(NumBande,ExtRayleigh[iBande][0][0]))
 				if int(Resolution[NumBande])==10:
 					Correc=(data[iBande]/(RatioIn*np.exp(-Moy_O3*tau_O3*(1/Extcosteta10+1/Extcostetav10)))-ExtRayleigh[iBande])*RatioOut
 					Correc[NoData<=0]=-99
@@ -916,7 +922,7 @@ for Ti in range(0,NbTile):
 
 			#Estimation du coefficient d'Angstroem
 			print("Temps Calcul1 %s seconds ---" % (time.time() - start_time))
-			print Haze
+			print (Haze)
 			Eps=[]
 			iBande=0
 			while iBande < len(Interest):
@@ -934,10 +940,10 @@ for Ti in range(0,NbTile):
 				EpsMax=max([ x for x in Eps if x<0 ])
 				#EpsMax=max(Eps[Eps<=0]) # modif cvi - erreur Eps n'est pas array
 
-			print Ti,Tj,EpsMax,Haze[Bande11]
+			print (Ti,Tj,EpsMax,Haze[Bande11])
 
 			if Haze[Bande11]>0.02:
-				print "No Dark target %s-%s" %(Ti,Tj)
+				print ("No Dark target %s-%s" %(Ti,Tj))
 				EpsArray[Ti,Tj]=np.nan
 				MinB11Array[Ti,Tj]=np.nan
 			else:
@@ -945,7 +951,7 @@ for Ti in range(0,NbTile):
 				MinB11Array[Ti,Tj]=Haze[Bande11]
 
 
-			f = open('%s/Correc.txt' %newfolder,'a+')
+			f = open(os.path.join(newfolder, 'Correc.txt'),'a+')
 			f.write("\n%s;%s;%s;%s;%s;" %(datum,Ti,Tj,EpsMax,Haze))
 			f.close	
 
@@ -959,12 +965,12 @@ for Ti in range(0,NbTile):
 
 nbNonNan=NbTile*NbTile-np.count_nonzero(np.isnan(MinB11Array))
 if nbNonNan==0:
-	print "No Dark target in the image --> QUIT"
+	print ("No Dark target in the image --> QUIT")
 	sys.exit()
 
 TotalMinB11=np.min(MinB11Array[MinB11Array>-1])
-print TotalMinB11
-print EpsArray
+print (TotalMinB11)
+print (EpsArray)
 
 for i in range(0,NbTile):
 	for j in range(0,NbTile):
@@ -978,19 +984,19 @@ for i in range(0,NbTile):
 
 nbNonNan=NbTile*NbTile-np.count_nonzero(np.isnan(MinB11Array))
 if nbNonNan==0:
-	print "No Dark target in the image --> QUIT"
+	print ("No Dark target in the image --> QUIT")
 	sys.exit()
 
-print "---"
-print EpsArray
-print MinB11Array
+print ("---")
+print (EpsArray)
+print (MinB11Array)
 
 
 
 nbNonNan=NbTile*NbTile-np.count_nonzero(np.isnan(EpsArray))
-print nbNonNan
+print (nbNonNan)
 if nbNonNan==0:
-	print "No Dark target in the image --> QUIT"
+	print ("No Dark target in the image --> QUIT")
 	sys.exit()
 '''
 if nbNonNan==1:
@@ -1005,11 +1011,11 @@ interpolatedEpsArray=InterpolArray(EpsArray)
 interpolatedMinB11Array=InterpolArray(MinB11Array)
 
 
-print "---"
+print ("---")
 
-print interpolatedEpsArray
+print (interpolatedEpsArray)
 
-print interpolatedMinB11Array
+print (interpolatedMinB11Array)
 
 fce.write("%s \n" %(np.mean(interpolatedEpsArray))) #cvi : print du coeff d angstrom calcule sur l'image
 fce.write("%s \n" %(np.mean(interpolatedMinB11Array))) #cvi : print du coeff d angstrom calcule sur l'image
@@ -1086,12 +1092,12 @@ while iBande < len(Write):
                 RayToWrite=copy.deepcopy(Rayleigh[Bande8A])
 
         if dataToWrite == []:
-                if os.path.isfile("%s/%s_B%s.TIF" %(DirW,ID,Write[iBande])):
-                        ds = gdal.Open("%s/%s_B%s.TIF" %(DirW,ID,Write[iBande]), gdal.GA_ReadOnly)
+                if os.path.isfile(os.path.join(DirW, f"{ID}_B{Write[iBande]}.TIF")):
+                        ds = gdal.Open(os.path.join(DirW, f"{ID}_B{Write[iBande]}.TIF"), gdal.GA_ReadOnly)
                 else:
-                        ds = gdal.Open("%s/%s_B%s.jp2" %(DirW,ID,Write[iBande]), gdal.GA_ReadOnly)
+                        ds = gdal.Open(os.path.join(DirW, f"{ID}_B{Write[iBande]}.jp2"), gdal.GA_ReadOnly)
 
-                print "Reading Bande %s" %Write[iBande]
+                print ("Reading Bande %s" %Write[iBande])
                 band = ds.GetRasterBand(1)
                 SizeX = ds.RasterXSize
                 print("Temps Avant %s seconds ---" % (time.time() - start_time))
@@ -1104,7 +1110,7 @@ while iBande < len(Write):
         print("Temps Start %s seconds ---" % (time.time() - start_time))
         tauR=8.524*10**(-3)*Lamb[NumBande]**(-4)+9.63*10**(-5)*Lamb[NumBande]**(-6)+1.1*10**(-6)*Lamb[NumBande]**(-8)
         tau_O3=getTau(Lamb[NumBande])
-        print "Ray %s : %s" %(NumBande,RayToWrite[0][0])
+        print ("Ray %s : %s" %(NumBande,RayToWrite[0][0]))
 
         if int(Resolution[NumBande])==10:
                 Correc=(dataToWrite/(RatioIn*np.exp(-Moy_O3*tau_O3*(1/costeta10+1/costetav10)))-RayToWrite-CorrecB1110*(Lamb[NumBande]/Lamb[11])**EpsArray10)/(np.exp(-0.5*tauR*(1/costeta10+1/costetav10))*np.exp(-0.1*0.14*(Lamb[NumBande]/0.55)**EpsArray10*(1/costeta10+1/costetav10)))*RatioOut
@@ -1120,16 +1126,16 @@ while iBande < len(Write):
 
 	#Enregistrement des fichiers corriges - surface reflectances
         driver = gdal.GetDriverByName('GTiff')
-        inDs = gdal.Open("%s/%s_B%s.jp2" %(DirW,ID,Write[iBande]))
+        inDs = gdal.Open(os.path.join(DirW, f"{ID}_B{Write[iBande]}.jp2"))
 
-        outDs = driver.Create("%s/C_%s_B%s.TIF" %(newfolder,ID,Write[iBande]), len(Correc[1]), len(Correc), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f"C_{ID}_B{Write[iBande]}.TIF"), len(Correc[1]), len(Correc), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(Correc)
         outBand.FlushCache()
         outBand.SetNoDataValue(-99)
         outDs.SetGeoTransform(inDs.GetGeoTransform())
         outDs.SetProjection(inDs.GetProjection())
-        print "Bande %s SAVED" %Write[iBande]
+        print ("Bande %s SAVED" %Write[iBande])
 
         #Correc = Correc.astype(int)
         if int(NumBande)==2:
@@ -1138,8 +1144,7 @@ while iBande < len(Write):
                 dataRef[1] = Correc     
         if int(NumBande)==4:
                 dataRef[2] = Correc
-
-        print NumBande
+        print (NumBande)
         iBande+=1
 
 #Creation du jpg de l'image corrigee (BOA)
@@ -1150,14 +1155,14 @@ rgbArray[..., 0] = (1-SnowMask10)*np.maximum(0,np.minimum(dataRef[2]*255/(RatioO
 rgbArray[..., 1] = (1-SnowMask10)*(1-CloudMask10)*np.maximum(0,np.minimum(dataRef[1]*255/(RatioOut*PixBlanc),255))  #Vert
 rgbArray[..., 2] = (1-CloudMask10)*np.maximum(0,np.minimum(dataRef[0]*255/(RatioOut*PixBlanc),255))  #Bleu
 img = Image.fromarray(rgbArray)
-img.save('%s/CloudMask_%s.jpg' %(newfolder,ID), quality=80)
+img.save(os.path.join(newfolder, f'CloudMask_{ID}.jpg'), quality=80)
 
 rgbArray = np.zeros((len(dataRef[0]),len(dataRef[0][1]),3), 'uint8')
 rgbArray[..., 0] = np.maximum(0,np.minimum(dataRef[2]*255/(RatioOut*PixBlanc),255))  #Rouge
 rgbArray[..., 1] = np.maximum(0,np.minimum(dataRef[1]*255/(RatioOut*PixBlanc),255))  #Vert
 rgbArray[..., 2] = np.maximum(0,np.minimum(dataRef[0]*255/(RatioOut*PixBlanc),255))  #Bleu
 img = Image.fromarray(rgbArray)
-img.save('%s/RGB_%s.jpg' %(newfolder,ID), quality=80)
+img.save(os.path.join(newfolder, f'RGB_{ID}.jpg'), quality=80)
 
 RGB = np.zeros((3,len(dataRef[0]),len(dataRef[0][1])), 'uint16')
 RGB[0] = np.maximum(0,np.minimum(dataRef[2]*255/(RatioOut*PixBlanc),255))  #Rouge
@@ -1196,8 +1201,8 @@ Aerosol665=CorrecB115490*(0.665/Lamb[11])**EpsArray5490
 
 
 #Enregistrement du masque nuage
-inDs = gdal.Open("%s/%s_B01.jp2" %(DirW,ID))
-outDs = driver.Create("%s/Cloud60_%s.TIF" %(DirW,ID), len(CloudMask60[1]), len(CloudMask60), 1, gdal.GDT_UInt16, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+inDs = gdal.Open(os.path.join(DirW, f"{ID}_B01.jp2"))
+outDs = driver.Create(os.path.join(newfolder, f"Cloud60_{ID}.TIF"), len(CloudMask60[1]), len(CloudMask60), 1, gdal.GDT_UInt16, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
 outBand = outDs.GetRasterBand(1)
 outBand.WriteArray(CloudMask60)
 outBand.FlushCache()
@@ -1205,17 +1210,17 @@ outBand.SetNoDataValue(-99)
 outDs.SetGeoTransform(inDs.GetGeoTransform())
 outDs.SetProjection(inDs.GetProjection())
 
-print "Cloud SAVED"
+print ("Cloud SAVED")
 
 try:
         DimTile=109800.0/(len(ArrayRayleigh2)*1.0)
         #Enregistrement du Eps et MinB11
-        inDs = gdal.Open("%s/%s_B01.jp2" %(DirW,ID))
+        inDs = gdal.Open(os.path.join(DirW, f"{ID}_B01.jp2"))
         inGs=inDs.GetGeoTransform()
 
         GeoT=[inGs[0],DimTile,inGs[2],inGs[3],inGs[4],-DimTile]
 
-        outDs = driver.Create("%s/Rayleigh865_%s.TIF" %(DirW,ID), len(ArrayRayleigh2[1]), len(ArrayRayleigh2), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f"Rayleigh865_{ID}.TIF"), len(ArrayRayleigh2[1]), len(ArrayRayleigh2), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(ArrayRayleigh2[..., 13])
         outBand.FlushCache()
@@ -1223,13 +1228,13 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "Rayleigh SAVED"
+        print ("Rayleigh SAVED")
 
 
         DimTile=109800.0/(len(Aerosol865)*1.0)
         GeoT=[inGs[0],DimTile,inGs[2],inGs[3],inGs[4],-DimTile]
 
-        outDs = driver.Create("%s/Aerosol865_%s.TIF" %(DirW,ID), len(Aerosol865[1]), len(Aerosol865), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f"Aerosol865_{ID}.TIF"), len(Aerosol865[1]), len(Aerosol865), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(Aerosol865)
         outBand.FlushCache()
@@ -1237,13 +1242,13 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "Aerosol SAVED"
+        print ("Aerosol SAVED")
 
 
         DimTile=109800.0/(len(ArrayZenithS)*1.0)
         GeoT=[inGs[0],DimTile,inGs[2],inGs[3],inGs[4],-DimTile]
 
-        outDs = driver.Create("%s/SolarZenith_%s.TIF" %(DirW,ID), len(ArrayZenithS[1]), len(ArrayZenithS), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f"SolarZenith_{ID}.TIF"), len(ArrayZenithS[1]), len(ArrayZenithS), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(np.array(ArrayZenithS))
         outBand.FlushCache()
@@ -1251,13 +1256,13 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "ArrayZenithS SAVED"
+        print ("ArrayZenithS SAVED")
 
 
         DimTile=109800.0/(len(ArrayAzimuthS)*1.0)
         GeoT=[inGs[0],DimTile,inGs[2],inGs[3],inGs[4],-DimTile]
 
-        outDs = driver.Create("%s/SolarAzimuth_%s.TIF" %(DirW,ID), len(ArrayAzimuthS[1]), len(ArrayAzimuthS), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f"SolarAzimuth_{ID}.TIF"), len(ArrayAzimuthS[1]), len(ArrayAzimuthS), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(np.array(ArrayAzimuthS))
         outBand.FlushCache()
@@ -1265,14 +1270,14 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "SolarZenith SAVED"
+        print ("SolarZenith SAVED")
 
 
 
         DimTile=109800.0/(len(ArrayZenithV)*1.0)
         GeoT=[inGs[0],DimTile,inGs[2],inGs[3],inGs[4],-DimTile]
 
-        outDs = driver.Create("%s/ViewingZenith_%s.TIF" %(DirW,ID), len(ArrayZenithV[1]), len(ArrayZenithV), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f"ViewingZenith_{ID}.TIF"), len(ArrayZenithV[1]), len(ArrayZenithV), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(np.array(ArrayZenithV))
         outBand.FlushCache()
@@ -1280,13 +1285,13 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "SolarZenith SAVED"
+        print ("SolarZenith SAVED")
 
 
         DimTile=109800.0/(1.0*1.0)
         GeoT=[inGs[0],DimTile,inGs[2],inGs[3],inGs[4],-DimTile]
 
-        outDs = driver.Create("%s/ViewingAzimuth_%s.TIF" %(DirW,ID), 1, 1, 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f'ViewingAzimuth_{ID}.TIF'), 1, 1, 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(np.array([[AzimuthV]]))
         outBand.FlushCache()
@@ -1294,19 +1299,19 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "ViewingAzimuth SAVED"
+        print ("ViewingAzimuth SAVED")
 
 
         DimTile=109800.0/(NbTile*1.0)
 
 
         #Enregistrement du Eps et MinB11
-        inDs = gdal.Open("%s/%s_B01.jp2" %(DirW,ID))
+        inDs = gdal.Open(os.path.join(DirW, f'{ID}_B01.jp2'))
         inGs=inDs.GetGeoTransform()
 
         GeoT=[inGs[0],DimTile,inGs[2],inGs[3],inGs[4],-DimTile]
 
-        outDs = driver.Create("%s/Eps_%s.TIF" %(DirW,ID), len(interpolatedEpsArray[1]), len(interpolatedEpsArray), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f'Eps_{ID}.TIF'), len(interpolatedEpsArray[1]), len(interpolatedEpsArray), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(np.array(interpolatedEpsArray))
         outBand.FlushCache()
@@ -1314,9 +1319,9 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "Eps SAVED"
+        print ("Eps SAVED")
 
-        outDs = driver.Create("%s/MinB11_%s.TIF" %(DirW,ID), len(interpolatedMinB11Array[1]), len(interpolatedMinB11Array), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
+        outDs = driver.Create(os.path.join(newfolder, f'MinB11_{ID}.TIF'), len(interpolatedMinB11Array[1]), len(interpolatedMinB11Array), 1, gdal.GDT_Float32, options=['TILED=YES','BIGTIFF=IF_SAFER','BLOCKXSIZE=512','BLOCKYSIZE=512','COMPRESS=LZW'])
         outBand = outDs.GetRasterBand(1)
         outBand.WriteArray(np.array(interpolatedMinB11Array))
         outBand.FlushCache()
@@ -1324,9 +1329,9 @@ try:
         outDs.SetGeoTransform(GeoT)
         outDs.SetProjection(inDs.GetProjection())
 
-        print "MinB11 SAVED"
+        print ("MinB11 SAVED")
 except:
-        print "Manque info mais pas grave"
+        print ("Manque info mais pas grave")
 
 
 
