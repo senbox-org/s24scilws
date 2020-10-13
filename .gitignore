@@ -19,3 +19,7 @@ generated-sources/
 .cache/
 .pytest_cache/
 .tox/
+
+# Local install script
+install.sh
+prepare_nbm.sh
