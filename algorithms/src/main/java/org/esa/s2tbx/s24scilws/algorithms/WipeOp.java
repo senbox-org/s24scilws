@@ -172,14 +172,14 @@ public class WipeOp extends PixelOperator {
 
         /*
           IF:
-            r OR g OR b = 0         OR
-            b11 OR b12 = 0          OR
+            r OR b = 0       OR
+            b11 AND b12 = 0          OR
             b11/b4 >= 0.69          OR
             b2 (blue band) < 65e-4  OR
             b11 > 0.035
           THEN mask = 0.
          */
-        if ((band_b == 0 || band_g == 0 || band_r == 0) || (band_11 == 0 || band_12 == 0) || band_11 / band_r >= 0.69 || band_b < 0.0065 || band_11 > 0.035) {
+        if ((band_b == 0 || band_r == 0) || (band_11 == 0 && band_12 == 0) || band_11 / band_r >= 0.69 || band_b < 0.0065 || band_11 > 0.035) {
             targetSamples[0].set(0);
             return;
         }
