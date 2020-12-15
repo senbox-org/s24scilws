@@ -7,11 +7,11 @@
     <groupId>org.esa.s2tbx.s24scilws</groupId>
     <artifactId>s24scilws</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0</version>
 
     <properties>
-        <snap.version>8.0.0-SNAPSHOT</snap.version>
-        <s2tbx.version>8.0.0-SNAPSHOT</s2tbx.version>
+        <snap.version>8.0.0</snap.version>
+        <s2tbx.version>8.0.0</s2tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
     </properties>
