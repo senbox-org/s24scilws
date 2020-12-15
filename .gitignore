@@ -23,3 +23,9 @@ generated-sources/
 # Local install script
 install.sh
 prepare_nbm.sh
+
+
+# VSCODE
+.classpath
+.settings
+.factorypath
