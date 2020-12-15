@@ -80,5 +80,5 @@ if os.path.exists(os.path.join(DirIn, "MTD_TL.xml")): #TEST pour voir s'il y a u
         if output is not None:
             print (output)
 else:
-    print(f'Error: input directory `{DirI}` does not contain the `MTD_TL.xml` file')
+    print(f'Error: input directory `{DirIn}` does not contain the `MTD_TL.xml` file')
     sys.exit(1)
