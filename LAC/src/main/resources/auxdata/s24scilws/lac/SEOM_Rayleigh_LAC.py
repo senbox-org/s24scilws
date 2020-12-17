@@ -648,6 +648,7 @@ costetav10=scipy.ndimage.zoom(costetav20, 2, order=1)
 #Application des corrections en appliquant le Dark Pixel
 dataRef=np.zeros((3,10980,10980), 'float')
 iBande=0
+# TODO: Note that dataGlob and Rayleigh are not initialized!
 while iBande < len(Write):
         dataToWrite=[]
         RayToWrite=[]

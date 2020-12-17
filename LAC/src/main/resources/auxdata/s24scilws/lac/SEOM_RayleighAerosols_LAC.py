@@ -850,7 +850,7 @@ for Ti in range(0,NbTile):
 			iBande+=1
 
 		if iBande>1000:   #Passage a la cible suivante
-			print ("Cible %s/%s hors image" %(Lon,Lat))
+			print ("Cible hors image")
 			continue
 
 		TestBand=data[0].reshape(data[0].shape[0]*data[0].shape[1],1)
