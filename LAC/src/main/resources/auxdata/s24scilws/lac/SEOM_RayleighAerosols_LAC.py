@@ -55,18 +55,16 @@ def getO3(Dir):
 	
 		grbs =pygrib.open("%s" %fileECMWFT)
 
-
-
 		tvar = grbs.select(name="Total column ozone")[0]
 		data, lats, lons = tvar.data(lat1=-100, lat2=100, lon1=-400, lon2=400)
 		mean=data.reshape(1,len(data)*len(data[0]),1).mean()
 		print (datum,mean)
+		global newfolder
 
+		if os.path.isfile(os.path.join(newfolder, 'MeanO3.txt')):
+			os.remove(os.path.join(newfolder, "MeanO3.txt"))
 
-		if os.path.isfile(os.path.join(newFolder, 'MeanO3.txt')):
-			os.remove(os.path.join(newFolder, "MeanO3.txt"))
-
-		f = open(os.path.join(newFolder, 'MeanO3.txt'),'a+')
+		f = open(os.path.join(newfolder, 'MeanO3.txt'),'a+')
 		f.write("%s;%s;" %(datum,mean))
 		f.close	
 
@@ -483,6 +481,7 @@ OutPath = sys.argv[4]
 LSB01=glob.glob(os.path.join(Dir, "IMG_DATA", "*B01.jp2"))
 DirW=os.path.dirname(LSB01[0])
 ID=(os.path.basename(LSB01[0])).replace("_B01.jp2","")
+
 
 newfolder = OutPath # Dir+"/output_DATA"
 
