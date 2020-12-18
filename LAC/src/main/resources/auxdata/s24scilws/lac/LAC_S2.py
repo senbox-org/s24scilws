@@ -2,7 +2,7 @@
 
 import os, sys, argparse, subprocess
 from datetime import datetime,timedelta
-
+import presteps, poststeps
 
 def parse_args(argv, struct):
     args = {}
@@ -43,6 +43,9 @@ Bands = str(args['bands'])
 Atmcor=str(args['atmcor'])
 DirOut=str(args['dirout'])
 
+presteps.prepare(DirIn, DirOut, Bands, Atmcor)
+
+TmpDirOut = os.path.join(DirOut, 'TMP')
 
 # Level=str(args.level)
 
@@ -58,7 +61,7 @@ if os.path.exists(os.path.join(DirIn, "MTD_TL.xml")): #TEST pour voir s'il y a u
     if Atmcor=="n":	
         print('Process without full correction')
         #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-        test=subprocess.Popen(["python", "SEOM_Rayleigh_LAC.py", DirIn, Bands, PixSat, DirOut], stderr=subprocess.PIPE)
+        test=subprocess.Popen(["python", "SEOM_Rayleigh_LAC.py", DirIn, Bands, PixSat, TmpDirOut], stderr=subprocess.PIPE)
         output,error=test.communicate()
         if error is not None:
             error = error.decode('utf-8')
@@ -69,7 +72,7 @@ if os.path.exists(os.path.join(DirIn, "MTD_TL.xml")): #TEST pour voir s'il y a u
             print (output)
     elif Atmcor=="y":
         #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-        test=subprocess.Popen(["python", "SEOM_RayleighAerosols_LAC.py", DirIn, Bands, "02_03_04_08_11", DirOut], stderr=subprocess.PIPE) #+"\" 02_03_04_08"
+        test=subprocess.Popen(["python", "SEOM_RayleighAerosols_LAC.py", DirIn, Bands, "02_03_04_08_11", TmpDirOut], stderr=subprocess.PIPE) #+"\" 02_03_04_08"
         #print ("python "+" SEOM_RayleighAerosols_LAC.py "+DirIn+" \""+Bands+"\" 02_03_04_08_11 "+DirOut)
         output,error=test.communicate()
         if error is not None:
@@ -79,6 +82,7 @@ if os.path.exists(os.path.join(DirIn, "MTD_TL.xml")): #TEST pour voir s'il y a u
                 sys.exit(1)
         if output is not None:
             print (output)
+    poststeps.poststeps(DirOut)
 else:
     print(f'Error: input directory `{DirIn}` does not contain the `MTD_TL.xml` file')
     sys.exit(1)

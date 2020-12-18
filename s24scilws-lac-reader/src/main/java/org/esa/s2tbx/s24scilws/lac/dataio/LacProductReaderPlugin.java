@@ -22,10 +22,7 @@ public class LacProductReaderPlugin implements ProductReaderPlugIn {
     @Override
     public DecodeQualification getDecodeQualification(Object input) {
         Path imageIOInputPath = convertInputToPath(input);
-        if(imageIOInputPath.endsWith("output_DATA")) {
-            return DecodeQualification.INTENDED;
-        }
-        if(imageIOInputPath.endsWith("MeanO3.txt")) {
+        if(imageIOInputPath.endsWith("MTD_LAC.xml")) {
             return DecodeQualification.INTENDED;
         }
         return DecodeQualification.UNABLE;

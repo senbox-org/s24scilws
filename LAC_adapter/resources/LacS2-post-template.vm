@@ -1,7 +1,7 @@
 #if($targetFolder.Directory)
     #set($fileList = $targetFolder.listFiles())
     #foreach($file in $fileList)
-        #if($file.Name.contains("MeanO3"))
+        #if($file.Name.contains("MTD_LAC.xml"))
             #set($targetFile=$file)
             #set($targetName=$file.AbsolutePath)
         #end

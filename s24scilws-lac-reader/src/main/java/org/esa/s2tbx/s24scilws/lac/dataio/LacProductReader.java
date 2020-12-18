@@ -40,8 +40,8 @@ public class LacProductReader extends AbstractProductReader {
     protected Product readProductNodesImpl() throws IOException {
 
         Path inputPath = BaseProductReaderPlugIn.convertInputToPath(super.getInput());
-        if(inputPath.getFileName().equals("MeanO3.txt")) {
-            inputPath.resolveSibling("output_DATA");
+        if(inputPath.getFileName().equals("MTD_LAC.xml")) {
+            inputPath.resolveSibling("GRANULE");
         }
 
         if (logger.isLoggable(Level.FINE)) {
