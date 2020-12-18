@@ -45,6 +45,9 @@ DirOut=str(args['dirout'])
 
 presteps.prepare(DirIn, DirOut, Bands, Atmcor)
 
+GrnPath = os.path.join(DirIn, 'GRANULE')
+GrnDirIn = os.path.join(GrnPath, os.listdir(GrnPath)[0])
+
 TmpDirOut = os.path.join(DirOut, 'TMP')
 
 # Level=str(args.level)
@@ -57,11 +60,11 @@ PixSat="0.15"
 #print "python "+DirScript+"/Sentinel_download2.py --lat "+Lat+" --lon "+Lon+" -a "+DirScript+"/apihub.txt -t "+Code+" -l "+Level+" -d "+TDateTemp+" -f "+TDateTemp+" -w "+DirOut+"/"+Code+"/"+TDateTemp+" --dhus"
 #test=subprocess.check_output("python "+DirScript+"/Sentinel_download2.py --lat "+Lat+" --lon "+Lon+" -a "+DirScript+"/apihub.txt -t "+Code+" -l "+Level+" -d "+TDateTemp+" -f "+TDateTemp+" -w "+DirOut+"/"+Code+"/"+TDateTemp+" --dhus", shell=True)
 #print ("python "+" SEOM_Rayleigh_LAC.py "+DirOut+" \""+Bands+"\" "+PixSat)
-if os.path.exists(os.path.join(DirIn, "MTD_TL.xml")): #TEST pour voir s'il y a un fichier telecharge a la date donnee
+if os.path.exists(os.path.join(GrnDirIn, "MTD_TL.xml")): #TEST pour voir s'il y a un fichier telecharge a la date donnee
     if Atmcor=="n":	
         print('Process without full correction')
         #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-        test=subprocess.Popen(["python", "SEOM_Rayleigh_LAC.py", DirIn, Bands, PixSat, TmpDirOut], stderr=subprocess.PIPE)
+        test=subprocess.Popen(["python", "SEOM_Rayleigh_LAC.py", GrnDirIn, Bands, PixSat, TmpDirOut], stderr=subprocess.PIPE)
         output,error=test.communicate()
         if error is not None:
             error = error.decode('utf-8')
@@ -72,7 +75,7 @@ if os.path.exists(os.path.join(DirIn, "MTD_TL.xml")): #TEST pour voir s'il y a u
             print (output)
     elif Atmcor=="y":
         #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-        test=subprocess.Popen(["python", "SEOM_RayleighAerosols_LAC.py", DirIn, Bands, "02_03_04_08_11", TmpDirOut], stderr=subprocess.PIPE) #+"\" 02_03_04_08"
+        test=subprocess.Popen(["python", "SEOM_RayleighAerosols_LAC.py", GrnDirIn, Bands, "02_03_04_08_11", TmpDirOut], stderr=subprocess.PIPE) #+"\" 02_03_04_08"
         #print ("python "+" SEOM_RayleighAerosols_LAC.py "+DirIn+" \""+Bands+"\" 02_03_04_08_11 "+DirOut)
         output,error=test.communicate()
         if error is not None:
