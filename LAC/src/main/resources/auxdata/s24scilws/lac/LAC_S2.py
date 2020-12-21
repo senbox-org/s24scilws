@@ -90,3 +90,4 @@ if os.path.exists(os.path.join(GrnDirIn, "MTD_TL.xml")): #TEST pour voir s'il y 
 else:
     print(f'Error: input directory `{DirIn}` does not contain the `MTD_TL.xml` file')
     sys.exit(1)
+print("LAC processing: SUCCESS")
