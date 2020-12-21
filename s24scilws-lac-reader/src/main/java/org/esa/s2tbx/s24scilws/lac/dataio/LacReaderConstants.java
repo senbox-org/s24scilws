@@ -13,6 +13,6 @@ public class LacReaderConstants {
     public static final String[] LAC_DEFAULT_EXTENSIONS = new String[]{""};
     public static final String[] LAC_FORMAT_NAMES = new String[]{"LAC"};
     public static final String[] MINIMAL_PRODUCT_PATTERNS = new String[] {
-            "/output_DATA/"
+            "MTD_LAC.xml"
     };
 }
