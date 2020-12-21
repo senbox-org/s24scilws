@@ -17,6 +17,7 @@ __AERO_BANDS__ = [('Aerosol865',), ('Cloud60',), ('CloudMask', 'jpg')]
 __COMMON_AUX__ = ['MeanO3.txt']
 __AERO_AUX__ = ['Correc.txt', 'CloudAndEps_v3.txt']
 
+#             <PRODUCT_URI>S2A_MSIL1C_20190712T085601_N0208_R007_T35TNH_20190712T110428.SAFE</PRODUCT_URI>
 
 class S2Product:
     def __init__(self):
@@ -111,7 +112,9 @@ def prepare(input, output, bands, aero):
         lac_prod_info.append(e)
     for e in root.xpath("//Product_Info/PRODUCT_STOP_TIME"):
         lac_prod_info.append(e)
-
+    for e in root.xpath("//Product_Info/PRODUCT_URI"):
+        new_el = etree.SubElement(lac_prod_info, 'PRODUCT_URI')
+        new_el.text = e.text[:-5] + '_LAC'
     etree.indent(lac_root, space="  ")
     #print(etree.tostring(lac_root, encoding='utf-8').decode())
     os.mkdir(output)
