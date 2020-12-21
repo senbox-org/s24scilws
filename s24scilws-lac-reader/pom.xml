@@ -36,6 +36,7 @@
         <dependency>
             <groupId>javax.xml.parsers</groupId>
             <artifactId>jaxp-api</artifactId>
+            <version>1.4.5</version>
         </dependency>
         
     </dependencies>
