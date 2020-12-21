@@ -89,6 +89,7 @@
     </parameter>
     <parameter>
       <name>sourceFolder</name>
+      <description>Sentinel 2 product folder.</description>
       <dataType>java.io.File</dataType>
       <valueSet/>
       <notNull>false</notNull>
@@ -97,6 +98,7 @@
     </parameter>
     <parameter>
       <name>targetFolder</name>
+      <description>Root folder where the output product will be created.</description>
       <dataType>java.io.File</dataType>
       <valueSet/>
       <notNull>false</notNull>
