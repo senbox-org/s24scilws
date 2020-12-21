@@ -115,8 +115,8 @@ def prepare(input, output, bands, aero):
     for e in root.xpath("//Product_Info/PRODUCT_URI"):
         new_el = etree.SubElement(lac_prod_info, 'PRODUCT_URI')
         new_el.text = e.text[:-5] + '_LAC'
-    etree.indent(lac_root, space="  ")
-    #print(etree.tostring(lac_root, encoding='utf-8').decode())
+    # etree.indent(lac_root, space="  ")
+    # print(etree.tostring(lac_root, encoding='utf-8').decode())
     os.mkdir(output)
     with open(os.path.join(output, 'MTD_LAC.xml'), 'wb') as file:
         file.write(etree.tostring(lac_root, encoding='utf-8'))
