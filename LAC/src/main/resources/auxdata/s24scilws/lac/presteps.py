@@ -43,11 +43,15 @@ def prepare(input, output, bands, aero):
     Prepare data structure and metadata for LAC product.
     """
     s2_metadata = os.path.join(input, 'MTD_MSIL1C.xml')
+    
     if not os.path.exists(input) or not os.path.exists(s2_metadata):
         print(f'[ERROR] The input S2 prodcuts `{input}` does not exists')
         sys.exit(1)
-    if os.path.exists(output):
-        print(f'[ERROR] The output LAC directory `{output}` exists')
+    if not os.path.exists(output):
+        print(f'[WARNING] The ouptut LAC directory `{output} does not exits')
+        os.mkdir(output)
+    elif len(os.listdir(output)) > 0:
+        print(f'[ERROR] The output LAC directory `{output}` is not empty')
         sys.exit(1)
 
     gr_path = os.path.join(input, 'GRANULE')
@@ -117,7 +121,7 @@ def prepare(input, output, bands, aero):
         new_el.text = e.text[:-5] + '_LAC'
     # etree.indent(lac_root, space="  ")
     # print(etree.tostring(lac_root, encoding='utf-8').decode())
-    os.mkdir(output)
+    # os.mkdir(output)
     with open(os.path.join(output, 'MTD_LAC.xml'), 'wb') as file:
         file.write(etree.tostring(lac_root, encoding='utf-8'))
     os.mkdir(os.path.join(output, 'GRANULE'))

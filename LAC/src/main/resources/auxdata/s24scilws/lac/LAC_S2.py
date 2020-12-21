@@ -42,7 +42,7 @@ DirIn =str(args['dirin'])
 ProdName = os.path.split(DirIn)[-1]
 Bands = str(args['bands'])
 Atmcor=str(args['atmcor'])
-DirOut= os.path.join(str(args['dirout']), f"{ProdName}_{Bands}_{Atmcor}_LAC")
+DirOut= str(args['dirout']) #, f"{ProdName}_{Bands}_{Atmcor}_LAC")
 
 presteps.prepare(DirIn, DirOut, Bands, Atmcor)
 
