@@ -21,9 +21,9 @@ import org.esa.snap.core.gpf.pointop.TargetSampleConfigurer;
 import org.esa.snap.core.gpf.pointop.WritableSample;
 
 /**
- * The <code>MyMerisPointOp</code> serves as a template for other MERIS L1B/OLCI point ops.
+ * The <code>WipeOP</code> is a simple operator to dect water bodies.
  *
- * @author Norman
+ * @author Martino Ferrari
  */
 
 @OperatorMetadata(
