@@ -10,23 +10,57 @@
     <version>1.1.0</version>
 
     <properties>
-        <snap.version>8.0.0</snap.version>
-        <s2tbx.version>8.0.0</s2tbx.version>
+        <snap.version>9.0.0-SNAPSHOT</snap.version>
+        <s2tbx.version>9.0.0-SNAPSHOT</s2tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
+        <user.language>en</user.language>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <brandingToken>s24scilws</brandingToken>
     </properties>
-
 
     <modules>
         <module>algorithms</module>
-        <module>LAC_adapter</module>
+        <module>lacs2</module>
+        <module>lacs2-adapter</module>
+        <module>toposhadow</module>
+        <module>toposhadow-adapter</module>
         <module>s24scilws-lac-reader</module>
         <module>s24scilws-kit</module>
         <module>s24scilws-help</module>
-        <module>topoShadow-adapter</module>
-        <module>topoShadow</module>
-        <module>LAC</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>snap-repo-public</id>
+            <name>Public Maven Repository for SNAP</name>
+            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>snap-repo-public</id>
+            <name>Public Maven Repository for SNAP</name>
+            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencyManagement>
     <dependencies>
@@ -70,41 +104,28 @@
             <groupId>org.esa.snap</groupId>
             <artifactId>snap-rcp</artifactId>
         </dependency> -->
+        
+        <!-- NetBeans -->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-javahelp</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-annotations-common</artifactId>
+            <version>${netbeans.version}</version>
+        </dependency>
+
     </dependencies>
     </dependencyManagement>
-
-
-    <repositories>
-        <repository>
-            <id>snap-repo-public</id>
-            <name>Public Maven Repository for SNAP</name>
-            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>snap-repo-public</id>
-            <name>Public Maven Repository for SNAP</name>
-            <url>https://snap-build-server.tilaa.cloud/nexus/repository/snap-maven-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <checksumPolicy>warn</checksumPolicy>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <build>
         <plugins>
@@ -238,7 +259,7 @@
                         <brandingToken>${brandingToken}</brandingToken>
                         <useOSGiDependencies>false</useOSGiDependencies>
                         <requiresRestart>true</requiresRestart>
-                        <keystore>${project.basedir}/../keystore/sen2coral.ks</keystore>
+                        <keystore>${project.basedir}/../../s2tbx/keystore/s2tbx.ks</keystore>
                         <keystorealias>snap</keystorealias>
                         <keystorepassword>snap-123</keystorepassword>
                         <sourceManifestFile>target/nbm/manifest.mf</sourceManifestFile>
