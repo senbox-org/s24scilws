@@ -61,12 +61,22 @@
         </dependency>
         <dependency>
             <groupId>org.esa.s2tbx.s24scilws</groupId>
-            <artifactId>toposhadow-adapter</artifactId>
+            <artifactId>lacs2</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s2tbx.s24scilws</groupId>
+            <artifactId>toposhadow</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.esa.s2tbx.s24scilws</groupId>
             <artifactId>lacs2-adapter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.esa.s2tbx.s24scilws</groupId>
+            <artifactId>toposhadow-adapter</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -79,17 +89,6 @@
             <artifactId>s24scilws-help</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.esa.s2tbx.s24scilws</groupId>
-            <artifactId>lacs2</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.s2tbx.s24scilws</groupId>
-            <artifactId>toposhadow</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.esa.snap</groupId>

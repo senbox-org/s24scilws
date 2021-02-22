@@ -16,7 +16,7 @@ public class LACActivator implements Activator {
     @Override
     public void start() {
         Path sourceDirPath = ResourceInstaller.findModuleCodeBasePath(getClass()).resolve("auxdata/s24scilws/lacs2");
-        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("s2tbx/s24scilws/lacs2");;
+        Path auxdataDirectory = SystemUtils.getAuxDataPath().resolve("s2tbx/s24scilws/lacs2");
         if (auxdataDirectory == null) {
             SystemUtils.LOG.severe("LAC configuration error: failed to retrieve auxdata path");
             return;
