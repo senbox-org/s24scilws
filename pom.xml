@@ -14,17 +14,15 @@
         <s2tbx.version>9.0.0-SNAPSHOT</s2tbx.version>
         <netbeans.version>RELEASE82</netbeans.version>
         <javahelp.version>2.0.05</javahelp.version>
-        <user.language>en</user.language>
+        <!-- <user.language>en</user.language>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <brandingToken>s24scilws</brandingToken>
+        <brandingToken>s24scilws</brandingToken> -->
     </properties>
 
     <modules>
         <module>algorithms</module>
         <module>lacs2</module>
         <module>toposhadow</module>
-        <module>lacs2-adapter</module>
-        <module>toposhadow-adapter</module>
         <module>s24scilws-lac-reader</module>
         <module>s24scilws-help</module>
         <module>s24scilws-kit</module>

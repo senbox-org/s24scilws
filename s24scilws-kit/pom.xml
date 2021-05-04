@@ -71,16 +71,6 @@
         </dependency>
         <dependency>
             <groupId>org.esa.s2tbx.s24scilws</groupId>
-            <artifactId>lacs2-adapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.s2tbx.s24scilws</groupId>
-            <artifactId>toposhadow-adapter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.esa.s2tbx.s24scilws</groupId>
             <artifactId>s24scilws-lac-reader</artifactId>
             <version>${project.version}</version>
         </dependency>
