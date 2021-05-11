@@ -3,7 +3,8 @@ package org.seom.SunIntersectionGrid.createGrid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.Driver;
 import org.gdal.gdal.gdal;
@@ -51,7 +52,7 @@ public class createTopoShadowGrid {
             System.out.println("By default EPSG is 4326 (WGS84)");
             return;
         }
-
+        System.out.println("Progress[%]: 0.0");
 
         String confFile = args[0];
         RuggedConfiguration config;
@@ -136,7 +137,8 @@ public class createTopoShadowGrid {
                 dst.ImportFromEPSG(4326);
                 ct = new CoordinateTransformation(src, dst);
             }
-
+            DecimalFormat formatter = new DecimalFormat("#0.0", new DecimalFormatSymbols(Locale.US));
+            int currentPurcentage = 0;
             for (int line=0; line < ySize; line++) {
                 for (int col=0; col < xSize; col++) {
                     double x = xGrid[col];
@@ -175,6 +177,12 @@ public class createTopoShadowGrid {
 
                     outGrid[col+line*xSize] = (float) Vector3D.distance(pA, pB);
                 }
+                int comparePurcentage=(int)(100*line/(float)(ySize+2));
+                System.out.println(comparePurcentage);
+                if(currentPurcentage<comparePurcentage){
+                    currentPurcentage = comparePurcentage;
+                    System.out.println("Progress[%]: "+formatter.format(currentPurcentage));
+                }
             }
 
             double [] geotransform = {xUL, xRes, 0, yUL, 0, yRes};
@@ -187,6 +195,7 @@ public class createTopoShadowGrid {
 
             dataset.FlushCache();
             dataset.delete();
+            System.out.println("Progress[%]: 100");
             System.out.println("Created file: "+args[2]);
 
         }  catch (IOException e) {

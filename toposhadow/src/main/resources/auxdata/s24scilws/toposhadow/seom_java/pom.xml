@@ -12,7 +12,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <properties>
     
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <seomVersion>1.0.0</seomVersion>
+      <seomVersion>1.0.1</seomVersion>
       <seomRpmVersion>01.00.00</seomRpmVersion>
       <rpmReleaseVersion>1</rpmReleaseVersion>
       <seomRpmReleaseVersion>${seomRpmVersion}-${rpmReleaseVersion}</seomRpmReleaseVersion>
@@ -77,13 +77,19 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <type>jar</type>
         <optional>false</optional>
       </dependency>
-
+      <!-- <dependency>
+        <groupId>org.esa.s2tbx</groupId>
+        <artifactId>lib-gdal</artifactId>
+        <version>9.0.0</version>
+      </dependency> -->
        <dependency>
         <groupId>org.gdal</groupId>
         <artifactId>gdal</artifactId>
         <version>${seom.gdal.version}</version>
-        <type>jar</type>
-        <optional>false</optional>       
+        <!-- <type>jar</type>
+        <optional>false</optional> -->
+        <scope>system</scope>
+        <systemPath>${GDAL_LIBRARY_PATH}/gdal.jar</systemPath>
       </dependency>
 
 
