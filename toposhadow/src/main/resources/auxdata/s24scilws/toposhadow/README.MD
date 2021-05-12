@@ -22,9 +22,9 @@ Libraries and tools:
 Get the binaries here:
 https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries
 
-Binaries may not be available, you will have to compile the sources. You can follow the building process here: https://github.com/wri/forma-clj/wiki/Building-GDAL.
+Binaries may not be available, you will have to compile the sources. You can follow the building process here
 
-create the GDAL_DIR environnement variable (the location where the package will be installed)
+Create the GDAL_DIR environnement variable (the location where the package will be installed)
 
 ```
 cd $GDAL_DIR
@@ -35,17 +35,24 @@ cd gdal-2.4.0
 ./make
 ```
 
-then edit gdal-2.4.0/swig/java/java.opt with your JAVA_HOME path
+Then edit gdal-2.4.0/swig/java/java.opt with your JAVA_HOME path
 
 ```
 cd gdal-2.4.0/swig/java/
 ./make
 ```
-following environement variable  will be necessary for launching topograpgy shadow extraction
+Following environement variable  will be necessary for launching topograpgy shadow extraction
 
 ``
 GDAL_LIBRARY_PATH = ${GDAL_DIR}/gdal-2.4.0/swig/java
 ``
+
+Add python bindings:
+
+```
+cd python gdal-2.4.0/swig/python
+python setup.py install
+```
 
 # SEOM_JAVA
 
@@ -61,7 +68,7 @@ following environement variable  will be necessary for launching topograpgy shad
 ``
  SEOM_JAVA="seom_java/target/seom-1.0-jar-with-dependencies.jar"
 ``
-note that jar are available in seom_java_jar direcotry
+note that jar are available in seom_java_jar directory
 
 ## Configuration
 
