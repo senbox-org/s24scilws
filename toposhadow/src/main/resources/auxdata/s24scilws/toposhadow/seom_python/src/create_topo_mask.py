@@ -125,10 +125,8 @@ def create_shapefile(output_mask,output):
         sys.exit(1)
     proj_data = src_ds.GetProjectionRef()
     srcband = src_ds.GetRasterBand(1)
-   
     if (os.path.exists(output)):
         os.remove(output)
-    logging.info("creating shapefile...")
     drv = ogr.GetDriverByName("ESRI Shapefile")
     dst_ds = drv.CreateDataSource( output)
     srs = osr.SpatialReference()
@@ -136,7 +134,6 @@ def create_shapefile(output_mask,output):
     dst_layer = dst_ds.CreateLayer(output, srs = srs )
 
     dst_fieldname = 'DN'
-
     fd = ogr.FieldDefn( dst_fieldname, ogr.OFTInteger )
     dst_layer.CreateField( fd )
     dst_field = 0
@@ -279,8 +276,9 @@ def create_topo_mask():
     maskShp = args.output + ".shp"
     create_shapefile(mask,maskShp)
 
-    
+    logging.info("Progress[%]: 100.0")
     logging.info('Done. Execution time: %f seconds',time.time() - t0)
+
 
 if __name__ == "__main__":
         

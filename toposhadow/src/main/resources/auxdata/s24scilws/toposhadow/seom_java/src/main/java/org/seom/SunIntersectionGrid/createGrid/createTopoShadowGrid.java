@@ -43,7 +43,6 @@ import org.seom.utilities.RuggedConfiguration;
 
 public class createTopoShadowGrid {
 
-
     public static void main(String[] args) {
 
         if(args.length < 5)
@@ -53,7 +52,6 @@ public class createTopoShadowGrid {
             return;
         }
         System.out.println("Progress[%]: 0.0");
-
         String confFile = args[0];
         RuggedConfiguration config;
         try {
@@ -102,7 +100,6 @@ public class createTopoShadowGrid {
             //final double sunElevation = localFrame.getElevation(sunPosition, itrf, referenceDate);
             //System.out.format(Locale.US, "sunAzimuth  = %3.1f ° sunZenith = %3.1f °",FastMath.toDegrees(sunAzimuth), 90.0 - FastMath.toDegrees(sunElevation));
 
-
             //loop over the grid
             double xUL = new Double(args[3]);
             double yUL = new Double(args[4]);
@@ -121,7 +118,6 @@ public class createTopoShadowGrid {
             double[] xGrid = ComputeUtils.gridCreation(xUL, xRes, xSize);
             double[] yGrid = ComputeUtils.gridCreation(yUL, yRes, ySize);
             float[] outGrid = new float[gridSize];
-
 
             gdal.AllRegister();
 
@@ -173,12 +169,9 @@ public class createTopoShadowGrid {
                     Vector3D pB = earth.transform(gpB);
                     //            System.out.format(Locale.US, "pB: X=%8.3f, Y = %8.3f, Z = %8.3f%n", pB.getX(), pB.getY(), pB.getZ());
 
-
-
                     outGrid[col+line*xSize] = (float) Vector3D.distance(pA, pB);
                 }
-                int comparePurcentage=(int)(100*line/(float)(ySize+2));
-                System.out.println(comparePurcentage);
+                int comparePurcentage=(int)(100*line/(float)(ySize+3));
                 if(currentPurcentage<comparePurcentage){
                     currentPurcentage = comparePurcentage;
                     System.out.println("Progress[%]: "+formatter.format(currentPurcentage));
@@ -192,12 +185,9 @@ public class createTopoShadowGrid {
             dataset.SetProjection(srs.ExportToPrettyWkt());
             dataset.GetRasterBand(1).WriteRaster(0, 0, xSize, ySize, xSize, ySize, gdalconst.GDT_Float32, outGrid);
 
-
             dataset.FlushCache();
             dataset.delete();
-            System.out.println("Progress[%]: 100");
             System.out.println("Created file: "+args[2]);
-
         }  catch (IOException e) {
             e.printStackTrace();
         } catch (OrekitException e) {
