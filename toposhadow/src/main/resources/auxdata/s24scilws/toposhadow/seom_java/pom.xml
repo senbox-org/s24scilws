@@ -22,7 +22,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <seom.orekit.version>9.1</seom.orekit.version>
       <seom.rugged.version>2.0</seom.rugged.version>
       <seom.hipparchus.version>1.2</seom.hipparchus.version>
-      <seom.gdal.version>2.4</seom.gdal.version>
+      <seom.gdal.version>2.4.0</seom.gdal.version>
 
       <!-- Compilers and Tools version -->
       <seom.compiler.source>1.8</seom.compiler.source>
@@ -77,23 +77,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <type>jar</type>
         <optional>false</optional>
       </dependency>
-      <!-- <dependency>
-        <groupId>org.esa.s2tbx</groupId>
-        <artifactId>lib-gdal</artifactId>
-        <version>9.0.0</version>
-      </dependency> -->
        <dependency>
         <groupId>org.gdal</groupId>
         <artifactId>gdal</artifactId>
         <version>${seom.gdal.version}</version>
-        <!-- <type>jar</type>
-        <optional>false</optional> -->
-        <scope>system</scope>
-        <systemPath>${GDAL_LIBRARY_PATH}/gdal.jar</systemPath>
+        <type>jar</type>
+        <optional>false</optional> 
       </dependency>
-
-
-      
     </dependencies>
 
     <build>
