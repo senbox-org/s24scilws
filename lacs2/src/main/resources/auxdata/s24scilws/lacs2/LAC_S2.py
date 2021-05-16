@@ -1,10 +1,14 @@
 #python LAC_S2.py -h to see description 
-
 import os, sys, argparse, subprocess
 from datetime import datetime,timedelta
 import presteps, poststeps
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger('logger')
 
 def parse_args(argv, struct):
+    logging.info('Start LAC_S2 cmd')
     args = {}
     argv = [arg.replace('-', '').replace(' ', '').strip() if arg.startswith('-') else arg for arg in argv]
 
@@ -14,80 +18,74 @@ def parse_args(argv, struct):
             if i+1 < len(argv) and argv[i+1] not in struct.keys():
                 args[key] = argv[i+1]
             else:
-                print(f'Misformed argument: -{key} or --{key}')
+                logging.error('Misformed argument: -{key} or --{key}')
                 sys.exit(1)
         else:
             if struct[key][1] is None:
-                print(f'Missing argument: -{key} or --{key}')
+                logging.error('Missing argument: -{key} or --{key}')
                 sys.exit(1)
             else:
                 args[key] = struct[key][1]
     return args
 
+if __name__ == "__main__":
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
 
-argv = sys.argv[1:]
+    python_exe = sys.executable
+    argv = sys.argv[1:]
 
-arg_struct = {
-    'dirin': ('(e.g: /home)', None),
-    'dirout': ('e.g: /home)', None),
-    'atmcor': ('(e.g: y means full correction while n means only Rayleigh)', None),
-    'bands': ('(e.g: Set the bands you want as output : 02_03_04_11 as default)', '02_03_04_11'),
-}
+    arg_struct = {
+        'dirin': ('(e.g: /home)', None),
+        'dirout': ('e.g: /home)', None),
+        'atmcor': ('(e.g: y means full correction while n means only Rayleigh)', None),
+        'bands': ('(e.g: Set the bands you want as output : 02_03_04_11 as default)', '02_03_04_11'),
+    }
 
 
 
-args = parse_args(argv, arg_struct)
+    args = parse_args(argv, arg_struct)
 
-DirIn =str(args['dirin'])
-ProdName = os.path.split(DirIn)[-1]
-Bands = str(args['bands'])
-Atmcor=str(args['atmcor'])
-DirOut= str(args['dirout']) #, f"{ProdName}_{Bands}_{Atmcor}_LAC")
+    DirIn =str(args['dirin'])
+    ProdName = os.path.split(DirIn)[-1]
+    Bands = str(args['bands'])
+    Atmcor=str(args['atmcor'])
+    DirOut= str(args['dirout']) #, f"{ProdName}_{Bands}_{Atmcor}_LAC")
 
-presteps.prepare(DirIn, DirOut, Bands, Atmcor)
+    presteps.prepare(DirIn, DirOut, Bands, Atmcor)
 
-GrnPath = os.path.join(DirIn, 'GRANULE')
-GrnDirIn = os.path.join(GrnPath, os.listdir(GrnPath)[0])
+    GrnPath = os.path.join(DirIn, 'GRANULE')
+    GrnDirIn = os.path.join(GrnPath, os.listdir(GrnPath)[0])
 
-TmpDirOut = os.path.join(DirOut, 'TMP')
+    TmpDirOut = os.path.join(DirOut, 'TMP')
 
-# Level=str(args.level)
+    # Level=str(args.level)
 
-print('Ready to process')
-Level="L1C"
-PixSat="0.15"
-#DirScriptDirScript="/mount/internal/work-st/projects/esrin-079/1402-seom/S2/scripts/S2_L8/S2"
-		
-#print "python "+DirScript+"/Sentinel_download2.py --lat "+Lat+" --lon "+Lon+" -a "+DirScript+"/apihub.txt -t "+Code+" -l "+Level+" -d "+TDateTemp+" -f "+TDateTemp+" -w "+DirOut+"/"+Code+"/"+TDateTemp+" --dhus"
-#test=subprocess.check_output("python "+DirScript+"/Sentinel_download2.py --lat "+Lat+" --lon "+Lon+" -a "+DirScript+"/apihub.txt -t "+Code+" -l "+Level+" -d "+TDateTemp+" -f "+TDateTemp+" -w "+DirOut+"/"+Code+"/"+TDateTemp+" --dhus", shell=True)
-#print ("python "+" SEOM_Rayleigh_LAC.py "+DirOut+" \""+Bands+"\" "+PixSat)
-if os.path.exists(os.path.join(GrnDirIn, "MTD_TL.xml")): #TEST pour voir s'il y a un fichier telecharge a la date donnee
-    if Atmcor=="n":	
-        print('Process without full correction')
-        #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-        test=subprocess.Popen(["python", "SEOM_Rayleigh_LAC.py", GrnDirIn, Bands, PixSat, TmpDirOut], stderr=subprocess.PIPE)
-        output,error=test.communicate()
-        if error is not None:
-            error = error.decode('utf-8')
-            if 'Warning' not in error:
-                print("The process failed:\n", error)
+    logging.info('Ready to process')
+    Level="L1C"
+    PixSat="0.15"
+    if os.path.exists(os.path.join(GrnDirIn, "MTD_TL.xml")):
+        if Atmcor=="n":
+            logging.info('Process without full correction')
+            src_file = sys.argv[0].replace("LAC_S2.py","SEOM_Rayleigh_LAC.py")
+            logging.info(src_file)
+            cmd = [python_exe, src_file, GrnDirIn, Bands, PixSat, TmpDirOut]
+            try:
+                subprocess.check_call(cmd,0)
+            except Exception as ex:
+                logging.error("The process failed:\n {}".format(ex))
                 sys.exit(1)
-        if output is not None:
-            print (output)
-    elif Atmcor=="y":
-        #test=subprocess.check_output("python "+DirScript+"/SEOM_Rayleigh_SCIHUB.py "+DirOut+"/"+Code+"/"+TDateTemp+" \""+Bands+"\" "+PixSat, shell=True)
-        test=subprocess.Popen(["python", "SEOM_RayleighAerosols_LAC.py", GrnDirIn, Bands, "02_03_04_08_11", TmpDirOut], stderr=subprocess.PIPE) #+"\" 02_03_04_08"
-        #print ("python "+" SEOM_RayleighAerosols_LAC.py "+DirIn+" \""+Bands+"\" 02_03_04_08_11 "+DirOut)
-        output,error=test.communicate()
-        if error is not None:
-            error = error.decode('utf-8')
-            if 'Warning' not in error:
-                print("The process failed:\n", error)
+        elif Atmcor=="y":
+            src_file = sys.argv[0].replace("LAC_S2.py","SEOM_RayleighAerosols_LAC.py")
+            logging.info(src_file)
+            cmd = [python_exe, src_file, GrnDirIn, Bands, "02_03_04_08_11", TmpDirOut]
+            try:
+                subprocess.check_call(cmd,0)
+            except Exception as ex:
+                logging.error("The process failed:\n {}".format(ex))
                 sys.exit(1)
-        if output is not None:
-            print (output)
-    poststeps.poststeps(DirOut)
-else:
-    print(f'Error: input directory `{DirIn}` does not contain the `MTD_TL.xml` file')
-    sys.exit(1)
-print("LAC processing: SUCCESS")
+        poststeps.poststeps(DirOut)
+    else:
+        logging.error('Error: input directory `{DirIn}` does not contain the `MTD_TL.xml` file')
+        sys.exit(1)
+    logging.info("LAC processing: SUCCESS")
