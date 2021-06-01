@@ -11,8 +11,8 @@
     <mapID target="WIPEOperator" url="WIPE/WIPETool.html"/>
     <mapID target="WIPEAlgorithm" url="WIPE/WIPEAlgoSpec.html"/>
 
-    <mapID target="topoOperator" url="topo/topoTool.html"/>
-    <mapID target="topoAlgorithm" url="topo/topoAlgoSpec.html"/>
+    <mapID target="topoOperator" url="topshadow/topoTool.html"/>
+    <mapID target="topoAlgorithm" url="topshadow/topoAlgoSpec.html"/>
 
     <mapID target="s24scilwsOperatorsIndexList" url="s24scilwsOperatorsIndexList.html"/>
 

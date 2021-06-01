@@ -1,0 +1,167 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.seom</groupId>
+    <artifactId>seom</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>seom</name>
+
+    <properties>
+    
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <seomVersion>1.0.1</seomVersion>
+      <seomRpmVersion>01.00.00</seomRpmVersion>
+      <rpmReleaseVersion>1</rpmReleaseVersion>
+      <seomRpmReleaseVersion>${seomRpmVersion}-${rpmReleaseVersion}</seomRpmReleaseVersion>
+          <seomDescriptorRef>jar-with-dependencies</seomDescriptorRef>
+
+
+      <seom.orekit.version>9.1</seom.orekit.version>
+      <seom.rugged.version>2.0</seom.rugged.version>
+      <seom.hipparchus.version>1.2</seom.hipparchus.version>
+      <seom.gdal.version>2.4.0</seom.gdal.version>
+
+      <!-- Compilers and Tools version -->
+      <seom.compiler.source>1.8</seom.compiler.source>
+      <seom.compiler.target>1.8</seom.compiler.target>
+      <seom.spotbugs-maven-plugin.version>3.1.7</seom.spotbugs-maven-plugin.version>
+      <seom.maven-compiler-plugin.version>3.8.0</seom.maven-compiler-plugin.version>
+      <seom.maven-assembly-plugin.version>3.1.0</seom.maven-assembly-plugin.version>
+      <seom.implementation.build>${git.revision}; ${maven.build.timestamp}</seom.implementation.build>
+
+    </properties>
+    
+    <developers>
+      <developer>
+        <name>Jonathan Guinet</name>
+        <id>jguinet</id>
+        <roles>
+          <role>architect</role>
+          <role>developer</role>
+        </roles>
+      </developer>
+    </developers>
+
+    <dependencies>
+    
+      <dependency>
+        <groupId>org.orekit</groupId>
+        <artifactId>rugged</artifactId>
+        <version>${seom.rugged.version}</version>
+        <type>jar</type>
+        <optional>false</optional>
+      </dependency>
+
+      <dependency>
+        <groupId>org.orekit</groupId>
+        <artifactId>orekit</artifactId>
+        <version>${seom.orekit.version}</version>
+        <type>jar</type>
+        <optional>false</optional>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hipparchus</groupId>
+        <artifactId>hipparchus-core</artifactId>
+        <version>${seom.hipparchus.version}</version>
+        <type>jar</type>
+        <optional>false</optional>
+      </dependency>
+      <dependency>
+        <groupId>org.hipparchus</groupId>
+        <artifactId>hipparchus-geometry</artifactId>
+        <version>${seom.hipparchus.version}</version>
+        <type>jar</type>
+        <optional>false</optional>
+      </dependency>
+       <dependency>
+        <groupId>org.gdal</groupId>
+        <artifactId>gdal</artifactId>
+        <version>${seom.gdal.version}</version>
+        <type>jar</type>
+        <optional>false</optional> 
+      </dependency>
+    </dependencies>
+
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${seom.maven-compiler-plugin.version}</version>
+          <configuration>
+            <source>${seom.compiler.source}</source>
+            <target>${seom.compiler.target}</target>
+            <compilerArgument>-Xlint:deprecation</compilerArgument>
+          </configuration>
+        </plugin>
+        
+        <plugin>
+          <groupId>com.google.code.maven-replacer-plugin</groupId>
+          <artifactId>maven-replacer-plugin</artifactId>
+          <version>1.3.8</version>
+          <executions>
+            <execution>
+              <phase>prepare-package</phase>
+                <goals>
+                  <goal>replace</goal>
+                </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <includes>
+              <include>src/generated/**/*.java</include>
+            </includes>
+            <token>^// Généré le : .*$</token>
+            <value>// Généré le : [TEXT REMOVED by maven-replacer-plugin]</value>
+            <regexFlags>
+              <regexFlag>MULTILINE</regexFlag>
+            </regexFlags>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${seom.maven-assembly-plugin.version}</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <manifest>
+                <mainClass>org.seom.SunIntersectionGrid.createGrid.createTopoShadowGrid</mainClass>
+              </manifest>
+            </archive>
+            <descriptorRefs>
+              <descriptorRef>${seomDescriptorRef}</descriptorRef>
+            </descriptorRefs>
+          </configuration>
+        </plugin>
+        
+      </plugins>
+    </build>
+    
+    <reporting>
+      <plugins>
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${seom.spotbugs-maven-plugin.version}</version>
+          <configuration>
+            <threshold>Normal</threshold>
+            <effort>Default</effort>
+            <excludeFilterFile>${basedir}/spotbugs-exclude-filter.xml</excludeFilterFile>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </reporting>
+</project>

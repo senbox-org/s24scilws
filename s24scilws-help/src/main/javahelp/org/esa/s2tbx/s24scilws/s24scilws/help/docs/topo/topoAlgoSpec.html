@@ -41,7 +41,7 @@
 <hr>
 <h5>Prerequisites</h5>
 <ul>
-    <li>Python 2.7.5</li>
+    <li>Python 3.5</li>
     <li>GDAL : 2.4.0 (bindings java and python)</li>
     <li>Ancillary data (configured in rugged configuration file</li>
     <ul>
@@ -51,6 +51,46 @@
         <img src="../images/DEMStructure.jpg" border=0/>
     </ul>
 </ul>
+
+<hr>
+<h5>GDAL installation</h5>
+<p>
+    Get the binaries here:<br>
+    https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries
+<br><br>
+    Binaries may not be available, you will have to compile the sources. You can follow the building process header
+    <br>Create the GDAL_DIR environnement variable (the location where the package will be installed)<br>
+<br>
+<code>
+    cd $GDAL_DIR<br>
+    wget http://download.osgeo.org/gdal/2.4.0/gdal-2.4.0.tar.gz<br>
+    tar -xvzf gdal-2.4.0.tar.gz<br>
+    cd gdal-2.4.0<br>
+    ./configure --with-java=yes<br>
+    ./make<br>
+</code>
+<br>
+Then edit gdal-2.4.0/swig/java/java.opt with your JAVA_HOME path
+<br><br>
+<code>
+cd gdal-2.4.0/swig/java/<br>
+./make<br>
+</code>
+<br>
+Fdollowing environement variable  will be necessary for launching topograpgy shadow extraction
+<br><br>
+<code>
+GDAL_LIBRARY_PATH = ${GDAL_DIR}/gdal-2.4.0/swig/java<br>
+</code>
+><br>
+Add python bindings:
+<br><br>
+<code>
+cd python gdal-2.4.0/swig/python<br>
+python setup.py install<br>
+</code>
+<br>
+</p>
 
 <hr>
 

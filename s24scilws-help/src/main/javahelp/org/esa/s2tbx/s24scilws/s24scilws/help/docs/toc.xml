@@ -19,8 +19,8 @@
                     <tocitem text="LAC Operator" target="LACOperator">
                         <tocitem text="LAC Algorithm Specification" target="LACAlgorithm"/>
                     </tocitem>
-                    <tocitem text="topo Operator" target="topoOperator">
-                        <tocitem text="topo Algorithm Specification" target="topoAlgorithm"/>
+                    <tocitem text="topshadow Operator" target="topoOperator">
+                        <tocitem text="topshadow Algorithm Specification" target="topoAlgorithm"/>
                     </tocitem>
                     <tocitem text="WIPE Operator" target="WIPEOperator">
                         <tocitem text="WIPE Algorithm Specification" target="WIPEAlgorithm"/>
