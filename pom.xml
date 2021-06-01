@@ -7,7 +7,7 @@
     <groupId>org.esa.s2tbx.s24scilws</groupId>
     <artifactId>s24scilws</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <properties>
         <snap.version>9.0.0-SNAPSHOT</snap.version>
