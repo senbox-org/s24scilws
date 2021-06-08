@@ -11,7 +11,7 @@
 
     <artifactId>algorithms</artifactId>
     <packaging>nbm</packaging>
-
+    <name>S2-4Sci Wipe operator</name>
 
     <dependencies>
 

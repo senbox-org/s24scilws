@@ -26,6 +26,8 @@
         <module>s24scilws-lac-reader</module>
         <module>s24scilws-help</module>
         <module>s24scilws-kit</module>
+        <module>lacs2-adapter</module>
+        <module>toposhadow-adapter</module>
     </modules>
 
     <repositories>

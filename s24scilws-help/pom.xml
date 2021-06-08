@@ -11,6 +11,9 @@
 
     <artifactId>s24scilws-help</artifactId>
     <packaging>nbm</packaging>
+
+    <name>S2-4Sci Help</name>
+
     <build>
         <plugins>
             <plugin>

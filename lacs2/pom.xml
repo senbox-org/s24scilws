@@ -9,9 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lacs2</artifactId>
+    <artifactId>lacs2-sources</artifactId>
     <packaging>nbm</packaging>
 
+    <name>S2-4Sci Lac S2 sources</name>
 
     <dependencies>
 
