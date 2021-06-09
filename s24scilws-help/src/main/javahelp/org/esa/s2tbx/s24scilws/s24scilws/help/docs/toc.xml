@@ -16,14 +16,11 @@
                 <tocitem text="S2-4Sci Land and Water Study Algorithms Complete List" target="s24scilwsOperatorsIndexList"/>
 
 
-                    <tocitem text="LAC Operator" target="LACOperator">
-                        <tocitem text="LAC Algorithm Specification" target="LACAlgorithm"/>
+                    <tocitem text="LAC S2 Operator" target="LACOperator">
                     </tocitem>
                     <tocitem text="Topographic Shadows Operator" target="ToposhadowOperator">
-                        <tocitem text="Topographic Shadows Algorithm Specification" target="ToposhadowAlgorithm"/>
                     </tocitem>
                     <tocitem text="WIPE Operator" target="WIPEOperator">
-                        <tocitem text="WIPE Algorithm Specification" target="WIPEAlgorithm"/>
                     </tocitem>
 
                 </tocitem>

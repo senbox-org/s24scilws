@@ -5,14 +5,11 @@
 
 <map version="2.0">
 
-    <mapID target="LACOperator" url="LAC/LACTool.html"/>
-    <mapID target="LACAlgorithm" url="LAC/LACAlgoSpec.html"/>
+    <mapID target="LACOperator" url="LAC/LACS2Operator.html"/>
 
-    <mapID target="WIPEOperator" url="WIPE/WIPETool.html"/>
-    <mapID target="WIPEAlgorithm" url="WIPE/WIPEAlgoSpec.html"/>
+    <mapID target="WIPEOperator" url="WIPE/WIPEOperator.html"/>
 
-    <mapID target="ToposhadowOperator" url="Toposhadow/ToposhadowTool.html"/>
-    <mapID target="ToposhadowAlgorithm" url="Toposhadow/ToposhadowAlgoSpec.html"/>
+    <mapID target="ToposhadowOperator" url="Toposhadow/ToposhadowOperator.html"/>
 
     <mapID target="s24scilwsOperatorsIndexList" url="s24scilwsOperatorsIndexList.html"/>
 
