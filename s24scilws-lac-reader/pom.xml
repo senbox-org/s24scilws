@@ -11,6 +11,7 @@
 
     <artifactId>s24scilws-lac-reader</artifactId>
     <packaging>nbm</packaging>
+    <name>S2-4Sci Lac reader</name>
 
     <dependencies>
         <dependency>

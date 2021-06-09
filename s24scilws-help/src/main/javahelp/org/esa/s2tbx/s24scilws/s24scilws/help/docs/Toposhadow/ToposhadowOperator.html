@@ -16,7 +16,7 @@
 
 <html>
 <head>
-    <title>LAC - Algorithm Specification</title>
+    <title>Topographic Shadows Operator</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="../style.css">
 </head>
@@ -25,27 +25,29 @@
 <table class="header">
     <tr class="header">
         <td class="header">&nbsp;
-            LAC Algorithm Specification</td>
+            Topographic Shadows Operator</td>
         <td class="header" align="right"><a href="nbdocs://org.esa.snap.snap.help/org/esa/snap/snap/help/docs/general/overview/SnapOverview.html"><img src="../images/snap_header.jpg" border=0></a></td>
     </tr>
 </table>
 
-<h3>LAC</h3>
-
 <p>
-    The purpose of the LAC algorithm is to perform atmospheric correction of a Sentinel-2 granule (for coastal and inland waters).
+    It is proposed a simple approach for detection and masking of topographic shadows.
+    The principle of shadow identification is to map a ground area and estimate for each
+    sample ground point whether it is directly under Sun light or if it is behind another
+    topographic feature as seen from the Sun.
 </p>
-
-
-<p>
-</p>
-
 <hr>
 <h5>Prerequisites</h5>
 <ul>
     <li>Python 3.5</li>
     <li>GDAL : 2.4.0 (bindings java and python)</li>
-    <li>Python packages (see $HOME/.snap/auxdata/s2tbx/s24scilws/lacs2/requirements.txt)</li>
+    <li>Ancillary data (configured in rugged configuration file</li>
+    <ul>
+        <li>orekit data : https://gitlab.orekit.org/orekit/orekit-data/-/archive/master/orekit-data-master.zip</li>
+        <li>geoid path (EGM96) :</li>
+        <li>SRMT1s tiles : available here (https://earthexplorer.usgs.gov)</li>
+        <img src="../images/DEMStructure.jpg" border=0/>
+    </ul>
 </ul>
 
 <hr>
@@ -85,23 +87,28 @@ Add python bindings:
 cd python gdal-2.4.0/swig/python<br>
 python setup.py install<br>
 </code>
-<br>
-Take care to use the appropriate python executable (Use python VM is better).
 </p>
-
-<h5>GDAL installation</h5>
-<p>
-    Install python packages:
-<br>
-<code>
-    cd $HOME/.snap/auxdata/s2tbx/s24scilws/lacs2/
-    python -m pip install -r requirements.txt
-</code>
-<br>
+<h5>Environement variable</h5>
+<p> After the GDAL installation and the plugin, some environement variables are required.<br>
+    There are two ways to set the variables:<br>
+    <ul>
+        <li>Export OS environnment variables:<br></li>
+        <p><code>
+            export PYTHON_BIN_SEOM=/usr/bin/python3<br>
+            export GDAL_DIR=$HOME/snap_extra/COTS<br>
+            export GDAL_DATA=$GDAL_DIR/gdal-2.4.0/data<br>
+            export SEOM_TOPO_DIR=$HOME/seom/tmp<br>
+            export GDAL_LIBRARY_PATH=$GDAL_DIR/gdal-2.4.0/swig/java<br>
+        </code></p> 
+        <li>Interactive with SNAP External Tools > TopoShadow > System Variables</li>
+        <p>
+            Note: the configuration will not saved after SNAP closing.
+        </p>
+    </ul>
 </p>
-
 <hr>
-<h5>LAC parameters</h5>
+<br>
+<h5>Topographic Shadows parameters</h5>
 <table border="0" cellpadding="1" cellspacing="1">
     <thead>
     <tr>
@@ -111,33 +118,52 @@ Take care to use the appropriate python executable (Use python VM is better).
     </thead>
     <tbody>
     <tr>
-        <td><strong>Complete atmospheric correction</strong></td>
-        <td>If true, the complete atmospheric correction is applied</td>
+        <td><strong>Output file</strong></td>
+        <td>Full path of the output file.</td>
     </tr>
     <tr>
-        <td><strong>Bands</strong></td>
-        <td>The bands to be corrected separated by "_".
+        <td><strong>Working directory</strong></td>
+        <td>Full path of the working directory.</td>
+    </tr>
+    <tr>
+        <td><strong>Ruggeg config file</strong></td>
+        <td><img src="../images/ruggedConfFile.jpg" border=0/>
         </td>
     </tr>
     <tr>
-        <td><strong>Source Folder</strong></td>
-        <td>The path to a folder of a Sentinel-2 tile.
-            (For example: /Data/S2/S2B_MSIL1C_20180328T003659_N0206_R059_T55LCD_20180328T021112.SAFE/GRANULE/L1C_T55LCD_A005519_20180328T003700)
+        <td><strong>Verbose</strong></td>
+        <td>Verbose mode.
         </td>
     </tr>
     <tr>
-        <td><strong>Target Folder</strong></td>
-        <td>The path to the root folder where the output product will be created.
-        </td>
+        <td><strong>Use footprint</strong></td>
+        <td>If this option is selected, the user defined footprint and EPSG are taken into account.</td>
+    </tr>
+    <tr>
+        <td><strong>Footprint</strong></td>
+        <td>user defined footprint [ULX ULY LRX LRY]</td>
+    </tr>
+    <tr>
+        <td><strong>EPSG</strong></td>
+        <td>EPSG code of footprint</td>
+    </tr>
+    <tr>
+        <td><strong>Threshold</strong></td>
+        <td>detection threshold in meters</td>
     </tr>
     </tbody>
 </table>
 
-<h5>LAC User Interface</h5>
+<h5>Topographic Shadows User Interface</h5>
 <p>
     The parameters described above can be set through the graphical user interface designed in the SNAP Desktop component:
 </p>
-<img src="../images/lacGUI.jpg" border=0/>
+<img src="../images/toposhadowGUI.jpg" border=0/>
 
+<p><br/></p>
+<p><b><a href="../s24scilwsOperatorsIndexList.html">Back to S2-4Sci Land and Water Study Modules List</a></b></p>
+
+<br>
+<hr>
 </body>
 </html>

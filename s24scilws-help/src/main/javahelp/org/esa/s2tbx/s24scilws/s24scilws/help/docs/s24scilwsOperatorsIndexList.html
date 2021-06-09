@@ -14,27 +14,38 @@
     </tr>
 </table>
 <h1>S2-4SCI Land and Water Study Algorithms</h1>
+<h3>Overview</h3>
+<p>
+    This plugins is based on SEOM study project aims to develop an atmospheric corrections scheme to produce high quality surface reflectance from Sentinel-2 data for coastal waters</p>
+</p>
+<br>
+<p>
+    The objective of the study is to develop, test, implement and validate methods (or combination of methods) for deriving atmospheric correction above coastal waters and over inland waters, to validate them according to the today’s best practices on a number of different sites offering variety of marine optical properties to provide their uncertainties.
+    The proposed solution is based on three sequential steps.
+    <br><br>
+    The first step is the cloud and cloud shadow detection and filtering – this will result in the flagging of contaminated pixels (contaminated either directly, as being hidden by the clouds or covered by their shadows, or indirectly as nearby the clouds and impacted by adjacency effects and multiple scattering).
+    <br>The second step consists in removing the glinted pixels over the water, this is done mainly by analyzing the SWIR band and, again, removing contaminated pixel from the analysis (this step however, depends on the Atmospheric Correction scheme that will finally selected).
+    <br>Lastly, the third step is the atmospheric correction per se.
+</p>
+<br>
 <table>
     <tr>
         <td><h4><b>Name</b></h4></td>
         <td><h4><b>Short Description</b></h4></td>
     </tr>
 
-
-
     <tr>
-        <td><h3><b><a href="LAC/LACAlgoSpec.html">LAC</a></b></h3></td>
-        <td><h5>Compute atmospheric corrections.</h5></td>
-    </tr>
-
-    <tr>
-        <td><h3><b><a href="Toposhadow/ToposhadowAlgoSpec.html">Toposhadow</a></b></h3></td>
+        <td><h3><b><a href="Toposhadow/ToposhadowOperator.html">TopoShadow</a></b></h3></td>
         <td><h5>Detection and masking of topographic shadows.</h5></td>
     </tr>
 
     <tr>
-        <td><h3><b><a href="WIPE/WIPEAlgoSpec.html">WIPE</a></b></h3></td>
+        <td><h3><b><a href="WIPE/WIPEOperator.html">WIPE</a></b></h3></td>
         <td><h5>Water bodies detection.</h5></td>
+    </tr>
+    <tr>
+        <td><h3><b><a href="LAC/LACS2Operator.html">LAC</a></b></h3></td>
+        <td><h5>Compute atmospheric corrections for coastal and inland waters.</h5></td>
     </tr>
 
 

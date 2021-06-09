@@ -9,9 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>toposhadow</artifactId>
+    <artifactId>toposhadow-sources</artifactId>
     <packaging>nbm</packaging>
 
+    <name>S2-4Sci Topographic Shadow sources</name>
 
     <dependencies>
 
