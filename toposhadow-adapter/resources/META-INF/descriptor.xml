@@ -57,7 +57,6 @@
     </osvariable>
     <osvariable>
       <key>PYTHON_BIN_SEOM</key>
-      <value>/usr/bin/python3</value>
       <isShared>false</isShared>
       <windows>$PYTHON_BIN_SEOM</windows>
       <linux></linux>

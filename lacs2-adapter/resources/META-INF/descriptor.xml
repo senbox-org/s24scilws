@@ -13,7 +13,7 @@
   <menuLocation>Menu/Optical/Thematic Water Processing/S2-4Sci Land and Water Study</menuLocation>
   <preprocessTool>false</preprocessTool>
   <writeForProcessing>false</writeForProcessing>
-  <mainToolFileLocation>$PYTHON_BIN</mainToolFileLocation>
+  <mainToolFileLocation>$PYTHON_BIN_SEOM</mainToolFileLocation>
   <workingDir>$java.io.tmpdir</workingDir>
   <templateType>VELOCITY</templateType>
   <template type="file">
@@ -42,12 +42,11 @@
       <isShared>false</isShared>
     </variable>
     <osvariable>
-      <key>PYTHON_BIN</key>
-      <value>python</value>
+      <key>PYTHON_BIN_SEOM</key>
       <isShared>false</isShared>
-      <windows>python</windows>
-      <linux>python3</linux>
-      <macosx>python</macosx>
+      <windows>$PYTHON_BIN_SEOM</windows>
+      <linux></linux>
+      <macosx></macosx>
       <isTransient>false</isTransient>
     </osvariable>
   </variables>
