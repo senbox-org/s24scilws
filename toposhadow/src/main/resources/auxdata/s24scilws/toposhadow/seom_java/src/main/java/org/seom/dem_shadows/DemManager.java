@@ -2,8 +2,6 @@ package org.seom.dem_shadows;
 
 import java.io.File;
 
-//import org.apache.logging.log4j.LogManager;
-//import org.apache.logging.log4j.Logger;
 import org.gdal.gdal.Band;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
