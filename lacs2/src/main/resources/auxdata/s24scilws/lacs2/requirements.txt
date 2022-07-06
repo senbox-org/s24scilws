@@ -1,7 +1,7 @@
 Cython==0.29.23
 DateTime==4.3
 GDAL==2.4.0
-lxml==4.6.3
+lxml==4.9.1
 numpy==1.19.5
 Pillow==8.2.0
 pygrib==2.1.3
